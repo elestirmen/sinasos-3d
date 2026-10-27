@@ -48,6 +48,7 @@ Modeli başka bir yerden okutmak da mümkün: bu klasöre `model_yolu.txt` koyup
 ## Nasıl çalışıyor
 
 - Model, `ReorientationPlugin` ile Mustafapaşa merkezine (38,58503 K, 34,89654 D, 1150 m elipsoid) taşınır. Sahnede Y yukarı, birimler metredir.
+- Oyun açılınca drone köyün ortasında, Cami-i Kebir ile medresenin kuzeyinde (yerel 100 m doğu, 95 m güney), yerden 45 m yükseklikte havada ve güneye bakarak bekler; burası ev noktasıdır (`T` yeni bir bataryayla buraya döndürür). Yardım ekranı açıkken batarya harcanmaz. Konum `game.js`'te `AYAR.baslangic`. Halka parkuru eski ev noktasından (`AYAR.parkurMerkez`, yerel 0, 0) üretilmeye devam eder, böylece parkur ve kayıtlı en iyi süre değişmez.
 - Çarpışma, yerden yükseklik ve iniş, yüklü karolara atılan ışınlarla (BVH hızlandırmalı) hesaplanır.
 - `data/arazi.bin`, Terra'nın `terra_dem/dem.tif` dosyasından üretilen 5 m'lik yerel ENU ızgarasıdır: arazi yüksekliği (DTM), uçuş sınırı (kapsama alanının 25 m içi) ve kapsama maskesi. Mini harita ve halka yerleşimi de buradan gelir.
 - `P` tuşu gimbal kamerasından PNG ve aynı ada sahip bir JSON üretir. Chrome ve Edge'de ilk seferde bir kayıt klasörü sorulur, sonraki fotoğraflar oraya sessizce yazılır. JSON'da kameranın enlem, boylam, elipsoid yüksekliği, yön, gimbal açısı ve iç parametreleri (fx, fy, cx, cy) bulunur. Fotoğrafta drone, gezi etiketleri ve görev vizörü görünmez.
@@ -117,7 +118,7 @@ Turda modelin dışı pus rengindedir. Fotogrametri modelindeki küçük delikle
 1. Yeni Terra çıktısındaki `terra_b3dms` klasörünü bu klasöre kopyala (ya da `model_yolu.txt` ile göster).
 2. `pip install numpy pillow scipy pyproj` ile gerekli paketleri kur.
 3. Bu klasörden, Terra çıktısındaki DEM dosyalarıyla: `python araclar/arazi_uret.py <terra_dem>/dem.tif <terra_dem>/dem.tfw <terra_dem>/tile.json data`
-4. Ev noktası ve yerel çerçeve, `data/arazi.json` içindeki merkez koordinattan otomatik gelir. Gezi noktaları, görevler ve tur bu köye özgüdür, yeniden yazılmalıdır.
+4. Yerel çerçeve `data/arazi.json` içindeki merkez koordinattan otomatik gelir. Başlangıç noktası (`AYAR.baslangic`), gezi noktaları, görevler ve tur bu köye özgüdür, yeniden yazılmalıdır.
 
 ## Ayarlar
 

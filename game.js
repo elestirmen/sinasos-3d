@@ -35,9 +35,13 @@ const AYAR = {
 		maksimum: { hata: 0.6, bellek: 10, piksel: 2 },
 	},
 	bataryaSure: 20 * 60,             // saniye, normal modda düz uçuş
+	// oyun açılınca drone köyün ortasında, Cami-i Kebir ile medresenin kuzeyinde havada bekler (ENU m, yerden m, yön derece);
+	// burası aynı zamanda ev noktası (T: eve dön)
+	baslangic: { e: 100, n: - 95, yerden: 45, yon: 190 },
 	halkaYaricap: 6,
 	halkaSayisi: 10,
 	parkurTohum: 2026,
+	parkurMerkez: { e: 0, n: 0 },     // halkalar buradan başlayarak üretilir (eski ev noktası; parkur ve en iyi süre değişmesin)
 	govde: 0.12,                      // drone merkezinden ayak altına (m)
 	carpismaYaricap: 0.7,
 };
@@ -99,7 +103,7 @@ const METIN = {
 		yonden: [ 'kuzeyden', 'kuzeydoğudan', 'doğudan', 'güneydoğudan', 'güneyden', 'güneybatıdan', 'batıdan', 'kuzeybatıdan' ],
 		takip: 'Takip', fpv: 'FPV', modAd: { cine: 'Cine', normal: 'Normal', spor: 'Spor' },
 		modMesaj: ( ad, v ) => `${ ad } modu · en fazla ${ v } m/s`,
-		kalkisIcin: 'Kalkış için Boşluk tuşuna bas', kalkis: 'Kalkış', inis: 'İniş yapıldı', inisBitti: 'Batarya bitti, iniş yapıldı. T ile eve dönebilirsin.',
+		kalkisIcin: 'Kalkış için Boşluk tuşuna bas', havada: 'Havadasın: W S ileri-geri, Q E dönüş, Boşluk ve Shift yüksel-alçal', kalkis: 'Kalkış', inis: 'İniş yapıldı', inisBitti: 'Batarya bitti, iniş yapıldı. T ile eve dönebilirsin.',
 		carpisma: 'Çarpışma!', sertInis: 'Sert iniş!', ucusSiniri: 'Uçuş sınırı: model bu noktada bitiyor', yukseklikSiniri: m => `Yükseklik sınırı: araziden ${ m } m`,
 		bataryaKritik: 'Batarya kritik! Eve dön (T) ya da iniş yap.', batarya30: 'Batarya %30', bataryaBitti: 'Batarya bitti, zorunlu iniş', evNoktasi: 'Ev noktası · yeni batarya takıldı',
 		sesAcik: 'Ses açık', sesKapali: 'Ses kapalı', pervaneAcik: 'Pervane sesi açık', pervaneKapali: 'Pervane sesi kapalı',
@@ -130,7 +134,7 @@ const METIN = {
 		hEnlem: 'Enlem', hBoylam: 'Boylam', hKamera: 'Kamera', hGimbal: 'Gimbal',
 		hIpucu: '<kbd>H</kbd> Yardım · <kbd>N</kbd> Gezi · <kbd>G</kbd> Parkur · <kbd>P</kbd> Fotoğraf',
 		hBaslik: 'Mustafapaşa üzerinde uçuş',
-		hGiris: "Matrice 4E ile çekilen 6875 fotoğraftan üretilen 3B modelin üzerinde serbest uçuş yapabilir ya da halka parkurunu tamamlamaya çalışabilirsin. Turkuaz ışıklar Mustafapaşa'nın (Sinasos) simge yapılarını gösteriyor: yanlarına uçunca müzik başlar ve yapının hikâyesi açılır. Fotoğraf görevlerini doğru yerden ve açıyla çekerek kendi Sinasos albümünü oluşturabilirsin. Drone ev noktasında yerde bekliyor, kalkmak için <kbd>Boşluk</kbd> tuşuna bas.",
+		hGiris: "Matrice 4E ile çekilen 6875 fotoğraftan üretilen 3B modelin üzerinde serbest uçuş yapabilir ya da halka parkurunu tamamlamaya çalışabilirsin. Turkuaz ışıklar Mustafapaşa'nın (Sinasos) simge yapılarını gösteriyor: yanlarına uçunca müzik başlar ve yapının hikâyesi açılır. Fotoğraf görevlerini doğru yerden ve açıyla çekerek kendi Sinasos albümünü oluşturabilirsin. Drone köyün ortasında, Cami-i Kebir'in yanında havada bekliyor; uçuşa başla ve yön tuşlarıyla ilerle. <kbd>T</kbd> seni yeni bir bataryayla buraya geri getirir.",
 		hUcus: 'Uçuş', hIleri: 'İleri / geri', hKay: 'Sola / sağa kay', hDon: 'Sola / sağa dön', hYuksel: 'Yüksel / alçal (kalkış, iniş)',
 		hModlar: 'Uçuş modu: Cine, Normal, Spor', hOklar: 'Ok tuşları da ileri-geri ve dönüş yapar', hBosluk: 'Boşluk',
 		hDiger: 'Kamera ve diğerleri', hKameraTus: 'Takip / FPV kamera', hGimbalTus: 'Gimbal yukarı / aşağı', hTakipMesafe: 'Takip mesafesi', hTeker: 'Fare tekerleği',
@@ -155,7 +159,7 @@ const METIN = {
 		yonden: [ 'from the north', 'from the northeast', 'from the east', 'from the southeast', 'from the south', 'from the southwest', 'from the west', 'from the northwest' ],
 		takip: 'Follow', fpv: 'FPV', modAd: { cine: 'Cine', normal: 'Normal', spor: 'Sport' },
 		modMesaj: ( ad, v ) => `${ ad } mode · up to ${ v } m/s`,
-		kalkisIcin: 'Press Space to take off', kalkis: 'Take-off', inis: 'Landed', inisBitti: 'Battery empty, landed. Press T to return home.',
+		kalkisIcin: 'Press Space to take off', havada: 'You are airborne: W S forward-back, Q E turn, Space and Shift up-down', kalkis: 'Take-off', inis: 'Landed', inisBitti: 'Battery empty, landed. Press T to return home.',
 		carpisma: 'Collision!', sertInis: 'Hard landing!', ucusSiniri: 'Flight boundary: the model ends here', yukseklikSiniri: m => `Altitude limit: ${ m } m above ground`,
 		bataryaKritik: 'Battery critical! Return home (T) or land.', batarya30: 'Battery 30%', bataryaBitti: 'Battery empty, forced landing', evNoktasi: 'Home point · fresh battery fitted',
 		sesAcik: 'Sound on', sesKapali: 'Sound off', pervaneAcik: 'Propeller sound on', pervaneKapali: 'Propeller sound off',
@@ -185,7 +189,7 @@ const METIN = {
 		hEnlem: 'Lat', hBoylam: 'Lon', hKamera: 'Camera', hGimbal: 'Gimbal',
 		hIpucu: '<kbd>H</kbd> Help · <kbd>N</kbd> Sights · <kbd>G</kbd> Race · <kbd>P</kbd> Photo',
 		hBaslik: 'Flying over Mustafapaşa',
-		hGiris: 'Fly freely over a 3D model built from 6,875 photos taken with a Matrice 4E, or try to finish the ring race. The turquoise beacons mark the landmarks of Mustafapaşa (Sinasos): fly up to them and music starts as the story of the building opens. Shoot the photo missions from the right spot and angle to build your own Sinasos album. The drone is waiting on the ground at the home point; press <kbd>Space</kbd> to take off.',
+		hGiris: 'Fly freely over a 3D model built from 6,875 photos taken with a Matrice 4E, or try to finish the ring race. The turquoise beacons mark the landmarks of Mustafapaşa (Sinasos): fly up to them and music starts as the story of the building opens. Shoot the photo missions from the right spot and angle to build your own Sinasos album. The drone is hovering in the middle of the village, next to the Cami-i Kebir; start flying and move with the keys. <kbd>T</kbd> brings you back here with a fresh battery.',
 		hUcus: 'Flight', hIleri: 'Forward / back', hKay: 'Strafe left / right', hDon: 'Turn left / right', hYuksel: 'Climb / descend (take-off, landing)',
 		hModlar: 'Flight mode: Cine, Normal, Sport', hOklar: 'Arrow keys also move forward-back and turn', hBosluk: 'Space',
 		hDiger: 'Camera and more', hKameraTus: 'Follow / FPV camera', hGimbalTus: 'Gimbal up / down', hTakipMesafe: 'Follow distance', hTeker: 'Mouse wheel',
@@ -898,7 +902,7 @@ const parkur = {
 	uret() {
 		const rnd = tohumluRastgele( AYAR.parkurTohum ), noktalar = [];
 		const guvenli = ( e, n ) => arazi.icinde( e, n ) && [ 0, 1, 2, 3 ].every( i => arazi.icinde( e + 30 * Math.cos( i * Math.PI / 2 ), n + 30 * Math.sin( i * Math.PI / 2 ) ) );
-		let pe = durum.ev.e, pn = durum.ev.n, yon = rnd() * Math.PI * 2;
+		let pe = AYAR.parkurMerkez.e, pn = AYAR.parkurMerkez.n, yon = rnd() * Math.PI * 2;
 		for ( let i = 0; i < AYAR.halkaSayisi; i ++ ) {
 			let bulunan = null;
 			for ( let d = 0; d < 120 && ! bulunan; d ++ ) {
@@ -919,7 +923,7 @@ const parkur = {
 			const mat = new THREE.MeshBasicMaterial( { color: 0xffffff, transparent: true, opacity: 0.35, fog: false, depthWrite: false } );
 			const m = new THREE.Mesh( geo, mat );
 			dunya( p.e, p.n, h, m.position );
-			const onceki = i === 0 ? durum.ev : noktalar[ i - 1 ];
+			const onceki = i === 0 ? AYAR.parkurMerkez : noktalar[ i - 1 ];
 			const yonV = new THREE.Vector3().addScaledVector( cerceve.E, p.e - onceki.e ).addScaledVector( cerceve.N, p.n - onceki.n ).normalize();
 			m.lookAt( m.position.clone().add( yonV ) );
 			const isik = new THREE.Mesh( isikGeo, new THREE.MeshBasicMaterial( { color: 0xffb21e, transparent: true, opacity: 0.28, fog: false, depthWrite: false } ) );
@@ -1760,7 +1764,8 @@ function fizik( dt ) {
 	// batarya
 	const hiz = Math.hypot( durum.vel.x, durum.vel.z );
 	const tuketim = ( 0.8 + 0.5 * hiz / 12 + 0.3 * Math.max( durum.vel.y, 0 ) / 5 ) * ( durum.mod === 'spor' ? 1.25 : 1 );
-	durum.batarya = Math.max( 0, durum.batarya - 100 / AYAR.bataryaSure * tuketim * dt );
+	// yardım ekranı açıkken (oyun başında drone havada beklerken) batarya harcanmaz
+	if ( ! yardimAcik ) durum.batarya = Math.max( 0, durum.batarya - 100 / AYAR.bataryaSure * tuketim * dt );
 	for ( const esik of [ 30, 15 ] ) {
 		if ( durum.batarya < esik && durum.bataryaUyari >= esik ) {
 			durum.bataryaUyari = esik;
@@ -1770,13 +1775,25 @@ function fizik( dt ) {
 	if ( bitti && durum.bataryaUyari > 0 ) { durum.bataryaUyari = 0; mesajGoster( t( 'bataryaBitti' ), 'uyari', 3500 ); }
 }
 
+// yön: kuzeyden saat yönünde derece
+function yonaCevir( yon ) {
+	const fx = Math.sin( yon * DERECE ) * cerceve.E.x + Math.cos( yon * DERECE ) * cerceve.N.x;
+	const fz = Math.sin( yon * DERECE ) * cerceve.E.z + Math.cos( yon * DERECE ) * cerceve.N.z;
+	durum.yaw = Math.atan2( - fx, - fz );
+}
+// başlangıç ve ev noktası: köyün ortasında, havada (AYAR.baslangic)
+function baslangicaKoy() {
+	const b = AYAR.baslangic;
+	durum.ev = { e: b.e, n: b.n };
+	dunya( b.e, b.n, arazi.yukseklik( b.e, b.n ) + b.yerden, durum.pos );
+	durum.yerde = false; durum.vel.set( 0, 0, 0 );
+	yonaCevir( b.yon );
+	durum.kamYerlesti = false; durum.iz.length = 0;
+}
 function eveDon() {
 	if ( ! durum.hazir ) return;
-	dunya( durum.ev.e, durum.ev.n, arazi.yukseklik( durum.ev.e, durum.ev.n ), durum.pos );
-	durum.yerde = true; durum.vel.set( 0, 0, 0 );
+	baslangicaKoy();
 	durum.batarya = 100; durum.bataryaUyari = 100;
-	durum.yaw = Math.atan2( - cerceve.N.x, - cerceve.N.z );
-	durum.kamYerlesti = false; durum.iz.length = 0;
 	mesajGoster( t( 'evNoktasi' ) );
 }
 
@@ -2051,7 +2068,7 @@ function basla() {
 	arayuz.yardim.classList.add( 'gizli' );
 	ses.baslat();
 	renderer.domElement.focus();
-	if ( durum.hazir && durum.yerde ) mesajGoster( t( 'kalkisIcin' ) );
+	if ( durum.hazir ) mesajGoster( t( durum.yerde ? 'kalkisIcin' : 'havada' ), '', 4000 );
 }
 function dilDegistir( yeni ) {
 	dil = yeni; guvenliYaz( 'mustafapasa-drone-dil', dil );
@@ -2100,16 +2117,13 @@ function dongu() {
 
 	if ( ! cerceve.hazir && tiles.root ) {
 		if ( cerceveKur() ) {
-			const h = arazi.yukseklik( 0, 0 );
-			dunya( 0, 0, h, durum.pos );
-			durum.ev = { e: 0, n: 0 };
-			durum.yaw = Math.atan2( - cerceve.N.x, - cerceve.N.z );
+			baslangicaKoy();
 			zemin.position.y = arazi.m.hMin - 14 - arazi.m.originHeight;
 			araziOrtusuKur();
 			gezi.kur();
 			gorev.kur();
 			durum.hazir = true;
-			if ( ! yardimAcik ) mesajGoster( t( 'kalkisIcin' ) );
+			if ( ! yardimAcik ) mesajGoster( t( 'havada' ), '', 4000 );
 		}
 	}
 
@@ -2172,6 +2186,5 @@ window.oyun = { durum, parkur, gezi, gorev, muzik, ses, tur, cerceve, get tiles(
 	// drone'u bir poza koy: elipsoid yüksekliği (m), yön (kuzeyden saat yönü) ve gimbal (derece)
 	poz( e, n, yukseklik, yon = 0, gimbal = - 15 ) {
 		dunya( e, n, yukseklik, durum.pos ); durum.yerde = false; durum.vel.set( 0, 0, 0 ); durum.kamYerlesti = false;
-		const d = new THREE.Vector3().addScaledVector( cerceve.E, Math.sin( yon * DERECE ) ).addScaledVector( cerceve.N, Math.cos( yon * DERECE ) );
-		durum.yaw = Math.atan2( - d.x, - d.z ); durum.gimbal = gimbal * DERECE;
+		yonaCevir( yon ); durum.gimbal = gimbal * DERECE;
 	} };

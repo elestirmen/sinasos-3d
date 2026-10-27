@@ -84,6 +84,11 @@ localStorage kökene bağlı (http://127.0.0.1:8000); taşınmadan önceki ziyar
 - Model yeri (27 Ekim): proje C: sürücüsüne taşınırken model de `terra_b3dms/` altına kopyalandı (E: USB HDD'den soğuk okuma ~26 MB/s idi).
   `sunucu.py --model KLASÖR` ya da proje klasöründe `model_yolu.txt` (ilk satır klasör) varsa `/terra_b3dms/` istekleri oradan karşılanır
   (`translate_path`); sahte klasörle denendi (tileset ve alt klasör oradan, oyun dosyaları yerinden, `..` kaçışı 404).
+- Havada başlangıç (27 Ekim, kullanıcı: "havada ve daha merkezi bir yerden başlasın"): `AYAR.baslangic = { e: 100, n: -95, yerden: 45, yon: 190 }`,
+  Cami-i Kebir ile medresenin kuzeyi; takip kamerasında önde minare ve medrese, arkada bütün köy (8 aday çizilip seçildi). `baslangicaKoy()`
+  hem açılışta hem `eveDon()`da (T) çağrılır: ev noktası burası, drone havada (`yerde = false`), yön `yonaCevir(derece)` ile. Eskiden ev (0, 0)
+  noktasında yerdeydi, köy merkezinin ~150-200 m kuzeybatısı. Yardım ekranı açıkken batarya harcanmaz (`fizik`). Karşılama kartı açılışta
+  hemen açılır (yerde değil). Açılış mesajı `havada`. Halka parkuru `AYAR.parkurMerkez` (0, 0) noktasından üretilir, kayıtlı en iyi süre geçerli kalır.
 - Kullanıcının bilgisayarı: RTX 5060 Ti 16 GB, 64 GB RAM, 24 çekirdek, 4K monitör (%175 ölçek, 59 Hz). Model C: sürücüsünde (taşınmadan önce E:, USB harici HDD).
 - Git (27 Ekim): depo kökü bu klasör, uzak depo `origin` = https://github.com/elestirmen/sinasos-3d (özel; kullanıcı açtı, GitHub Apache 2.0
   `LICENSE` ile "Initial commit" ekledi, yerel commit'ler onun üzerine alındı). Claude'un `git push`u otomatik izin denetiminde beş kez
