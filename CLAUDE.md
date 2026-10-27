@@ -20,11 +20,13 @@ sinasos-3d/
 ├── game.js        oyunun tamamı (tek modül)
 ├── sunucu.py      yerel sunucu (bu klasörü yayınlar, MIME türlerini sabitler; --model / model_yolu.txt ile model başka yerden)
 ├── BASLAT.bat     Windows başlatıcı: python sunucu.py 8000
+├── INTERNETE_AC.bat  python sunucu.py --funnel (yalnız oyun dosyaları, port 8090, Tailscale Funnel); aşağıda "İnternete açma"
 ├── data/          arazi.bin, arazi.json, harita.png (DEM'den üretildi); noktalar.json (gezi + görevler, TR/EN);
 │                  tur.json (sinematik tur); gorev_pozlari.json (görev deneme pozları)
 ├── araclar/       arazi_uret.py (data/ üretir), tur_uret.py (tur.json), kayit_alici.py (video kaydı), olcum.js (grafik ölçümü, konsoldan)
 ├── muzik/, video/ (videolar ve video/ham depoda yok), karsilastirma_20261026/ (LOD düzeltmesi), karsilastirma_20261027/ (Maksimum ayarı)
-├── lib/           three 0.186.1, 3d-tiles-renderer 0.5.3, three-mesh-bvh 0.9.16, Draco çözücü (npm yok, dosyalar kopyalandı)
+├── lib/           three 0.186.1, 3d-tiles-renderer 0.5.3, three-mesh-bvh 0.9.16, Draco çözücü, spark 2.3.1 (npm yok, dosyalar kopyalandı)
+├── splat/         Gaussian Splatting deneme modeli (kilise_pilot.ply + .json; .gitignore), aşağıdaki "Gaussian Splatting denemesi"
 └── terra_b3dms/   modelin kopyası (4,58 GB, 18.900 dosya; .gitignore). Aslı Terra projesinde (models/pc/0/terra_b3dms), ona DOKUNMA.
 ```
 
@@ -33,6 +35,15 @@ oyun çalışırken gerekmez, yalnız `araclar/arazi_uret.py` DEM'i okur.
 
 Çalıştırma: `python sunucu.py 8000` sonra `http://127.0.0.1:8000/` (localhost değil, aşağıdaki sunucu notuna bak). index.html dosya olarak açılırsa çalışmaz.
 localStorage kökene bağlı (http://127.0.0.1:8000); taşınmadan önceki ziyaretler, albüm ve ayarlar aynı adreste korunur.
+
+İnternete açma (27 Ekim 2026, kullanıcı istedi): bilgisayarda Tailscale 1.94.2 var (makine `desktop-404idpo`, 100.80.239.41).
+`sunucu.py --yayin`: yalnız `YAYIN_IZINLI` (index.html, game.js, LICENSE, LICENSE-ICERIK.md, lib, data, muzik, splat, terra_b3dms) verilir,
+nokta ile başlayan adlar ve klasör listesi 404; port 8090 sabit (doluysa açılmaz, kısıtsız bir sunucu Funnel'ın arkasına düşmesin diye).
+`--funnel` buna ek olarak `tailscale funnel 8090`'ı ön planda alt süreç olarak başlatır; sunucu kapanınca Funnel da kalkar.
+Sınandı (yerelde, Funnel açılmadan): 32 yasak yol (BAP, .git, CLAUDE.md, sunucu.py, klasör listeleri, `..`, `%2e%2e`, `%5c`, `::$DATA`,
+büyük harf) 404 ya da index.html'e çıkıyor; oyun 8090'dan açıldı, 250 isteğin hepsi geldi (yalnız diskte olmayan ney kaydı 404), K ile
+splat yüklendi. Funnel'ı kullanıcı kendisi açıyor (ilk seferde yönetim panelinde izin). Sunucu localhost'u dinlemeye devam ediyor;
+Funnel isteği oraya iletiyor. Yayın açıkken localStorage kökeni https://<makine>.<tailnet>.ts.net olur.
 
 ## Mimari
 
@@ -63,6 +74,11 @@ localStorage kökene bağlı (http://127.0.0.1:8000); taşınmadan önceki ziyar
 - Video kaydı: `tur.kaydet({ bicim: 'h264' | 'jpeg', bas, son, fps, w, h, hata })`. Animasyon döngüsünü durdurur, `Scheduler.setXRSession()` ile kütüphanenin kuyruklarını `MessageChannel` tabanlı `hemen()`e bağlar (gizli panelde setTimeout saniyede bire kısılıyordu), her karede art arda iki boş güncellemeye kadar yükleme bekler, WebCodecs donanım H.264 (Annex B, 40 Mbps) ile kodlayıp `araclar/kayit_alici.py`'ye (`/ekle`) gönderir. Ölçümler: tarayıcı JPEG toBlob kare başına ~840 ms, ham RGBA gönderimi ~350 ms, WebCodecs ile 5682 kare 227 sn. Çıktı `video/mustafapasa_sinematik_tur.mp4` (x264 CRF 19, AAC, 571 MB). Panel gizliyken sayfa hiç kare çizmezse kaydet() ilk kurulumu `dongu()`yu elle çağırarak yapar.
 - Arazi örtüsü (`araziOrtusuKur()`): arazi.bin'den modelin 3 m altında, krem renkli, gölgelendirilmiş ızgara; model deliklerini kapatır, çarpışmaya girmez.
 - Pervane sesi (27 Ekim): `ses.pervane`, `U` tuşu ve `#pervaneAcik` kutusu, localStorage `mustafapasa-drone-pervane`. Kullanıcı uğultuyu rahatsız edici buldu; süzgeç 520 Hz, kazanç 0,025'e indirildi.
+  27 Ekim akşamı kullanıcının kararı: varsayılan KAPALI (localStorage'da '1' yoksa kapalı; daha önce U ile açan tarayıcıda açık kalır).
+- Yükseklik tuşları (27 Ekim akşamı, kullanıcı istedi): Shift yüksel (kalkış), Ctrl alçal (iniş); Boşluk da yükseltir (eski alışkanlık).
+  Önceden Boşluk yüksel, Shift alçaldı. Ctrl basılıyken tarayıcı kısayolları `preventDefault` ile kesiliyor (Ctrl+R/F/S/P/E ...).
+  Ctrl+W/T/N'yi Chrome sayfaya bırakmıyor: alçalırken W ile ileri gitmek sekmeyi kapatabilir. Önlem: uçarken Ctrl basılıyken
+  `beforeunload` "Siteden ayrılsın mı?" sorusu çıkarır. Tam çözüm istenirse: tam ekran + `navigator.keyboard.lock()` (yalnız Chrome/Edge).
 - Fotoğraf görevleri / Sinasos albümü (27 Ekim, kullanıcı istedi): `gorev` nesnesi, veri `noktalar.json` "gorevler" (alan açıklaması dosyadaki
   "gorevAciklama"da). 8 görev: kilisenin revaklı batı girişi (narteks), medresenin taç kapısı, minare + cami, Cansever Konağı avlusu tepeden,
   Eski Rum Evi'nin cumbalı KB cephesi, kanyondan Aziz Vasilios (GB), Nikolaos avlusu yukarıdan, köy panoraması (yerden >= 100 m, en az 5 gezi
@@ -97,6 +113,41 @@ localStorage kökene bağlı (http://127.0.0.1:8000); taşınmadan önceki ziyar
   değiştirildi. Kütüphaneler ve müzikler kendi lisanslarında, model ve ham veri lisans dışı. Depoya girmeyenler `.gitignore`da: terra_b3dms/, model_yolu.txt, video/*.mp4, video/ham/, __pycache__.
   Commit mesajlarının sonuna `Co-Authored-By: Claude ...` satırı eklenir. Byzantine Chant kaydında icracı izni gri alan (muzik/KUNYE.txt):
   depo herkese açılacaksa önce kullanıcıya sor.
+
+## Gaussian Splatting denemesi (27 Ekim 2026, kullanıcı istedi)
+
+Aynı uçuşun fotoğraflarından Spirula Studio ile eğitilen splat modeli (iş akışı ve sonuçlar:
+`E:\photogrametry\2026-Matrice-4E\ucuslar\2026-10-20_mustafapasa\07_gaussian\OKUBENI.txt`). Şimdilik yalnız pilot alan: Aziz Konstantin ve
+Eleni Kilisesi çevresi, 200 m yarıçap. Kullanıcının kararı: splat görüntü için, Terra mesh'i çarpışma için görünmez kalsın.
+Kullanıcının kararı (27 Ekim akşamı): oyun Terra mesh'iyle açılır, splat varsayılan KAPALI, K tuşuyla açılır; kiliseye odaklı büyük
+splat eğitimi yapılmayacak (bu veriyle mesh daha keskin). Model (188 MB) ilk K basışında indirilir, açılışta indirilmez.
+- Çizici: Spark 2.3.1 (World Labs, MIT; `lib/spark/spark.module.js` + LICENSE, jsdelivr'den 27 Ekim'de kullanıcı onayıyla indirildi,
+  SHA-256 2de375d5e489692f976abe3199c8435ecc00f97fabaf35e489eb7d368e1f6f60). Import map: `@sparkjsdev/spark`. Logaritmik derinlik
+  tamponunu destekliyor (shader'ında logdepthbuf parçaları var).
+- Veri: `splat/<ad>.ply` (standart 3DGS PLY, SH 3) ve `splat/<ad>.json` (merkez_enu, yaricap, mesh_yaricap). Üreten:
+  `07_gaussian\betikler\splat_oyuna.py`; UTM -> ECEF -> oyunun ENU'su nokta nokta (pyproj), yönelim için tek donme (sebeke yakinsamasi
+  -1,183 derece). Dosya yoksa oyun eskisi gibi açılır. `?splat=0` kapatır, `?splat=<ad>` başka dosya.
+- `gauss` nesnesi (game.js): çerçeve hazır olunca `kur()` 24 dikey `THREE.Plane` (merkezin çevresinde mesh_yaricap'ta çokgen) kurar
+  (açmaz; `ac()` sahne hazır olmadan çalışmaz); ilk açılışta `SparkRenderer` + `SplatMesh`, matris `makeBasis(cerceve.E, cerceve.N, YUKARI)` + `cerceve.O`. Model yüklenince bütün karo
+  malzemelerine `clippingPlanes` + `clipIntersection = true` (içerisi çizilmez; `renderer.localClippingEnabled = true`). Malzemeler
+  `load-model`/`dispose-model` ile bir kümede tutuluyor (önbellekte bekleyen karolar da güncellensin diye). Işınlar (`isin`) kırpmayı
+  görmez: çarpışma, yerden yükseklik ve görev görüş testi mesh'le aynen çalışıyor (denendi: splat açıkken aşağı ışın 80,05 m).
+  K tuşu aç/kapat (yardım ekranında, TR/EN). Fotoğraf JSON'unun `not` alanı splat açıkken bunu belirtir.
+- Sınama (27 Ekim, gizli tarayıcı panelinde 1280x800 taklit, GPU aynı anda eğitimdeydi): 335.980 splat 0,3 sn'de yüklendi. Hizalama: aynı
+  kameradan splat açık/kapalı kenar görüntüleri 640x400'de üç pozda (tepeden 80 m, iki eğik) kayma 0 piksel (piksel ~0,2 m).
+  Görüntü kalitesi (ilk pilot, Terra'nın yumuşak görüntüleriyle eğitilen model): 45-80 m'de mesh'e yakın ama daha bulanık, sokakta
+  çizgi şeklinde bulaşmalar; ağaçlar ve kanyondaki mesh deliği daha iyi. 14 m'de yatay bakışta mesh açıkça daha iyi (splat fotoğrafların
+  çekildiği bakışlardan uzaklaşınca dağılıyor). Karşılaştırma görüntüleri oturumun 07_gaussian\01_pilot\oyun_karsilastirma\ klasöründe.
+  Kullanıcı bu ilk modeli "mesh çok daha iyi, splat çok kötü" buldu. Neden (27 Ekim akşamı bulundu): o eğitimde başlangıç noktaları
+  Terra nokta bulutundan geniş alana eşit dağıtılmıştı, 1 milyonluk splat sınırı baştan dolmuş, kilise çevresine yalnız 336 bin splat
+  kalmıştı. Şu an `splat/kilise_pilot.ply` Spirula pozlu model (`pilot_varsayilan`): 200 m içinde 759.329 splat, 188 MB, 1,6 sn'de
+  yükleniyor, hizalama yine 0 piksel. 30-80 m'de mesh'e yakın (ağaç ve direkler daha doğal, kiremit ve kenarlar mesh'te daha keskin),
+  14 m'de mesh hâlâ daha iyi. Karşılaştırma `kars3_*.jpg` (mesh | ilk | ikinci). Bu uçuş verisiyle (yalnız havadan, orbit yok)
+  splatın alçak uçuşta mesh'i geçmesi beklenmiyor; olası kullanım: yüksekte splat, alçakta mesh ya da sinematik tur.
+  Kullanıcı ikinci modeli de "öncekinden iyi ama mesh hâlâ daha iyi" buldu. Varsayılan kapalı yapıldıktan sonra sınandı (27 Ekim):
+  açılışta splat yok, PLY isteği yok, kırpılan malzeme yok; K ile 0,9 sn'de yüklendi (759.329 splat, 362 karo malzemesi kırpıldı),
+  tekrar K ile kapandı (kırpma kalktı). Terra pozlarıyla eğitilen ve SfM başlangıç noktası kullanan model (oturumdaki A3) Spirula
+  pozlu modelden yalnız 0,4 dB geride; oyunda Spirula pozlu model kaldı.
 
 ## ÇÖZÜLDÜ (26 Ekim 2026): model kaba, düşük poligonlu görünüyordu
 

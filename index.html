@@ -157,7 +157,8 @@
     "three/addons/": "./lib/three/examples/jsm/",
     "3d-tiles-renderer": "./lib/3d-tiles-renderer/index.js",
     "3d-tiles-renderer/plugins": "./lib/3d-tiles-renderer/index.plugins.js",
-    "three-mesh-bvh": "./lib/three-mesh-bvh/index.module.js"
+    "three-mesh-bvh": "./lib/three-mesh-bvh/index.module.js",
+    "@sparkjsdev/spark": "./lib/spark/spark.module.js"
   }
 }
 </script>
@@ -247,9 +248,9 @@
       <div><span data-t="hIleri">İleri / geri</span><span><kbd>W</kbd> <kbd>S</kbd></span></div>
       <div><span data-t="hKay">Sola / sağa kay</span><span><kbd>A</kbd> <kbd>D</kbd></span></div>
       <div><span data-t="hDon">Sola / sağa dön</span><span><kbd>Q</kbd> <kbd>E</kbd></span></div>
-      <div><span data-t="hYuksel">Yüksel / alçal (kalkış, iniş)</span><span><kbd data-t="hBosluk">Boşluk</kbd> <kbd>Shift</kbd></span></div>
+      <div><span data-t="hYuksel">Yüksel / alçal (kalkış, iniş)</span><span><kbd>Shift</kbd> <kbd>Ctrl</kbd></span></div>
       <div><span data-t="hModlar">Uçuş modu: Cine, Normal, Spor</span><span><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd></span></div>
-      <div><span data-t="hOklar">Ok tuşları da ileri-geri ve dönüş yapar</span><span><kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd></span></div>
+      <div><span data-t="hOklar">Ok tuşları da ileri-geri ve dönüş yapar; Boşluk da yükseltir</span><span><kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd></span></div>
       <h3 data-t="hDiger">Kamera ve diğerleri</h3>
       <div><span data-t="hKameraTus">Takip / FPV kamera</span><span><kbd>V</kbd></span></div>
       <div><span data-t="hGimbalTus">Gimbal yukarı / aşağı</span><span><kbd>R</kbd> <kbd>F</kbd></span></div>
@@ -263,6 +264,7 @@
       <div><span data-t="hSes">Bütün sesler aç / kapat</span><span><kbd>M</kbd></span></div>
       <div><span data-t="hPervane">Pervane sesi aç / kapat</span><span><kbd>U</kbd></span></div>
       <div><span data-t="hDilTus">Dil: Türkçe / English</span><span><kbd>L</kbd></span></div>
+      <div><span data-t="hSplatTus">Gaussian Splatting (kilise çevresi, deneme)</span><span><kbd>K</kbd></span></div>
       <div><span data-t="hEkran">Bu ekran</span><span><kbd>H</kbd></span></div>
       <h3 data-t="hKumanda">Oyun kumandası (Mod 2)</h3>
       <div><span data-t="hSolCubuk">Yükseklik ve dönüş</span><span data-t="hSol">Sol çubuk</span></div>
@@ -289,7 +291,7 @@
         </select>
       </label>
       <label><input type="checkbox" id="sesAcik" checked> <span data-t="hSesAyar">Ses</span></label>
-      <label><input type="checkbox" id="pervaneAcik" checked> <span data-t="hPervaneAyar">Pervane sesi</span></label>
+      <label><input type="checkbox" id="pervaneAcik"> <span data-t="hPervaneAyar">Pervane sesi</span></label>
       <label><input type="checkbox" id="muzikAcik" checked> <span data-t="hMuzikAyar">Gezi müziği</span></label>
       <button id="turBasla" type="button" data-t="hTurDugme">Sinematik tur</button>
       <button id="basla" data-t="hBasla">Uçuşa başla</button>

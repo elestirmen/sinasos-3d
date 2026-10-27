@@ -6,6 +6,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { TilesRenderer, Scheduler } from '3d-tiles-renderer';
 import { GLTFExtensionsPlugin, ReorientationPlugin, TilesFadePlugin } from '3d-tiles-renderer/plugins';
 import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh';
+import { SparkRenderer, SplatMesh } from '@sparkjsdev/spark';
 
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
 THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
@@ -17,6 +18,9 @@ const AYAR = {
 	tileset: parametre.get('tileset') || './terra_b3dms/tileset.json',
 	veri: './data/',
 	tur: parametre.get( 'tur' ) || 'tur.json',   // farklı bir tur denemek için: ?tur=tur_v2.json
+	// Gaussian Splatting katmanı: splat/<ad>.ply + .json varsa K tuşuyla açılır (açılışta kapalı, model ilk açılışta yüklenir);
+	// ?splat=0 kapatır, ?splat=<ad> başka dosya
+	splat: parametre.get( 'splat' ) === '0' ? null : parametre.get( 'splat' ) || 'kilise_pilot',
 	maxYerdenYukseklik: 150,          // m, arazinin (DTM) üzerinde tavan
 	modlar: {
 		cine: { ad: 'Cine', yatay: 4, dikey: 2, donus: 35, ivme: 1.4 },
@@ -103,10 +107,13 @@ const METIN = {
 		yonden: [ 'kuzeyden', 'kuzeydoğudan', 'doğudan', 'güneydoğudan', 'güneyden', 'güneybatıdan', 'batıdan', 'kuzeybatıdan' ],
 		takip: 'Takip', fpv: 'FPV', modAd: { cine: 'Cine', normal: 'Normal', spor: 'Spor' },
 		modMesaj: ( ad, v ) => `${ ad } modu · en fazla ${ v } m/s`,
-		kalkisIcin: 'Kalkış için Boşluk tuşuna bas', havada: 'Havadasın: W S ileri-geri, Q E dönüş, Boşluk ve Shift yüksel-alçal', kalkis: 'Kalkış', inis: 'İniş yapıldı', inisBitti: 'Batarya bitti, iniş yapıldı. T ile eve dönebilirsin.',
+		kalkisIcin: 'Kalkış için Shift tuşuna bas', havada: 'Havadasın: W S ileri-geri, Q E dönüş, Shift yüksel, Ctrl alçal', kalkis: 'Kalkış', inis: 'İniş yapıldı', inisBitti: 'Batarya bitti, iniş yapıldı. T ile eve dönebilirsin.',
 		carpisma: 'Çarpışma!', sertInis: 'Sert iniş!', ucusSiniri: 'Uçuş sınırı: model bu noktada bitiyor', yukseklikSiniri: m => `Yükseklik sınırı: araziden ${ m } m`,
 		bataryaKritik: 'Batarya kritik! Eve dön (T) ya da iniş yap.', batarya30: 'Batarya %30', bataryaBitti: 'Batarya bitti, zorunlu iniş', evNoktasi: 'Ev noktası · yeni batarya takıldı',
 		sesAcik: 'Ses açık', sesKapali: 'Ses kapalı', pervaneAcik: 'Pervane sesi açık', pervaneKapali: 'Pervane sesi kapalı',
+		splatAcik: 'Gaussian Splatting açık (kilise çevresi) · K', splatKapali: 'Gaussian Splatting kapalı: Terra modeli · K',
+		splatYukleniyor: 'Gaussian Splatting modeli yükleniyor...', splatYok: 'Bu bilgisayarda splat modeli yok (splat klasörü)',
+		splatHata: 'Splat modeli açılamadı', splatNot: ' Kilise çevresinde Gaussian Splatting modeli (pilot) çizildi.',
 		parkurKapali: 'Parkur kapatıldı', parkurHazir: 'Parkur hazır: süre ilk halkadan geçince başlar', sureBasladi: 'Süre başladı!',
 		parkurTamam: ( s, ceza, rekor ) => `Parkur tamamlandı: ${ s }${ ceza ? ` (ceza +${ ceza } sn)` : '' }${ rekor ? ' · yeni rekor!' : '' }`,
 		carpismaCeza: 'Çarpışma! +5 sn ceza', baslangicHalkasi: 'Başlangıç halkası', sonrakiHalka: 'Sonraki halka', bitti: 'Bitti',
@@ -136,11 +143,11 @@ const METIN = {
 		hBaslik: 'Mustafapaşa üzerinde uçuş',
 		hGiris: "Matrice 4E ile çekilen 6875 fotoğraftan üretilen 3B modelin üzerinde serbest uçuş yapabilir ya da halka parkurunu tamamlamaya çalışabilirsin. Turkuaz ışıklar Mustafapaşa'nın (Sinasos) simge yapılarını gösteriyor: yanlarına uçunca müzik başlar ve yapının hikâyesi açılır. Fotoğraf görevlerini doğru yerden ve açıyla çekerek kendi Sinasos albümünü oluşturabilirsin. Drone köyün ortasında, Cami-i Kebir'in yanında havada bekliyor; uçuşa başla ve yön tuşlarıyla ilerle. <kbd>T</kbd> seni yeni bir bataryayla buraya geri getirir.",
 		hUcus: 'Uçuş', hIleri: 'İleri / geri', hKay: 'Sola / sağa kay', hDon: 'Sola / sağa dön', hYuksel: 'Yüksel / alçal (kalkış, iniş)',
-		hModlar: 'Uçuş modu: Cine, Normal, Spor', hOklar: 'Ok tuşları da ileri-geri ve dönüş yapar', hBosluk: 'Boşluk',
+		hModlar: 'Uçuş modu: Cine, Normal, Spor', hOklar: 'Ok tuşları da ileri-geri ve dönüş yapar; Boşluk da yükseltir',
 		hDiger: 'Kamera ve diğerleri', hKameraTus: 'Takip / FPV kamera', hGimbalTus: 'Gimbal yukarı / aşağı', hTakipMesafe: 'Takip mesafesi', hTeker: 'Fare tekerleği',
 		hFoto: 'Fotoğraf + konum bilgisi (PNG ve JSON, ilk seferde kayıt klasörü sorulur); görevleri de bununla çekersin',
 		hParkur: 'Halka parkurunu başlat / kapat', hRehber: 'Gezi rehberi aç / kapat', hKart: 'Gezi bilgi kartını kapat / aç', hTur: 'Sinematik tur başlat / bitir',
-		hEv: 'Eve dön (yeni batarya)', hSes: 'Bütün sesler aç / kapat', hPervane: 'Pervane sesi aç / kapat', hDilTus: 'Dil: Türkçe / English', hEkran: 'Bu ekran',
+		hEv: 'Eve dön (yeni batarya)', hSes: 'Bütün sesler aç / kapat', hPervane: 'Pervane sesi aç / kapat', hDilTus: 'Dil: Türkçe / English', hSplatTus: 'Gaussian Splatting (kilise çevresi, deneme)', hEkran: 'Bu ekran',
 		hKumanda: 'Oyun kumandası (Mod 2)', hSolCubuk: 'Yükseklik ve dönüş', hSol: 'Sol çubuk', hSagCubuk: 'İleri-geri ve yana', hSag: 'Sağ çubuk',
 		hDugmeler: 'Fotoğraf · kamera · parkur', hModGimbal: 'Uçuş modu · gimbal', hOmuz: 'LB / RB · yön tuşları',
 		hGeziListe: 'Sinasos gezisi', hZiyaretSifirla: 'ziyaretleri sıfırla', hAlbumBaslik: 'Sinasos albümü · fotoğraf görevleri', hAlbumSifirla: 'albümü sıfırla',
@@ -159,10 +166,13 @@ const METIN = {
 		yonden: [ 'from the north', 'from the northeast', 'from the east', 'from the southeast', 'from the south', 'from the southwest', 'from the west', 'from the northwest' ],
 		takip: 'Follow', fpv: 'FPV', modAd: { cine: 'Cine', normal: 'Normal', spor: 'Sport' },
 		modMesaj: ( ad, v ) => `${ ad } mode · up to ${ v } m/s`,
-		kalkisIcin: 'Press Space to take off', havada: 'You are airborne: W S forward-back, Q E turn, Space and Shift up-down', kalkis: 'Take-off', inis: 'Landed', inisBitti: 'Battery empty, landed. Press T to return home.',
+		kalkisIcin: 'Press Shift to take off', havada: 'You are airborne: W S forward-back, Q E turn, Shift up, Ctrl down', kalkis: 'Take-off', inis: 'Landed', inisBitti: 'Battery empty, landed. Press T to return home.',
 		carpisma: 'Collision!', sertInis: 'Hard landing!', ucusSiniri: 'Flight boundary: the model ends here', yukseklikSiniri: m => `Altitude limit: ${ m } m above ground`,
 		bataryaKritik: 'Battery critical! Return home (T) or land.', batarya30: 'Battery 30%', bataryaBitti: 'Battery empty, forced landing', evNoktasi: 'Home point · fresh battery fitted',
 		sesAcik: 'Sound on', sesKapali: 'Sound off', pervaneAcik: 'Propeller sound on', pervaneKapali: 'Propeller sound off',
+		splatAcik: 'Gaussian Splatting on (around the church) · K', splatKapali: 'Gaussian Splatting off: Terra model · K',
+		splatYukleniyor: 'Loading the Gaussian Splatting model...', splatYok: 'No splat model on this computer (splat folder)',
+		splatHata: 'Could not open the splat model', splatNot: ' A Gaussian Splatting model (pilot) was drawn around the church.',
 		parkurKapali: 'Race closed', parkurHazir: 'Race ready: the clock starts at the first ring', sureBasladi: 'Clock started!',
 		parkurTamam: ( s, ceza, rekor ) => `Race finished: ${ s }${ ceza ? ` (penalty +${ ceza } s)` : '' }${ rekor ? ' · new record!' : '' }`,
 		carpismaCeza: 'Collision! +5 s penalty', baslangicHalkasi: 'Start ring', sonrakiHalka: 'Next ring', bitti: 'Done',
@@ -191,11 +201,11 @@ const METIN = {
 		hBaslik: 'Flying over Mustafapaşa',
 		hGiris: 'Fly freely over a 3D model built from 6,875 photos taken with a Matrice 4E, or try to finish the ring race. The turquoise beacons mark the landmarks of Mustafapaşa (Sinasos): fly up to them and music starts as the story of the building opens. Shoot the photo missions from the right spot and angle to build your own Sinasos album. The drone is hovering in the middle of the village, next to the Cami-i Kebir; start flying and move with the keys. <kbd>T</kbd> brings you back here with a fresh battery.',
 		hUcus: 'Flight', hIleri: 'Forward / back', hKay: 'Strafe left / right', hDon: 'Turn left / right', hYuksel: 'Climb / descend (take-off, landing)',
-		hModlar: 'Flight mode: Cine, Normal, Sport', hOklar: 'Arrow keys also move forward-back and turn', hBosluk: 'Space',
+		hModlar: 'Flight mode: Cine, Normal, Sport', hOklar: 'Arrow keys also move forward-back and turn; Space also climbs',
 		hDiger: 'Camera and more', hKameraTus: 'Follow / FPV camera', hGimbalTus: 'Gimbal up / down', hTakipMesafe: 'Follow distance', hTeker: 'Mouse wheel',
 		hFoto: 'Photo + pose data (PNG and JSON, asks for a folder the first time); also used for the missions',
 		hParkur: 'Start / close the ring race', hRehber: 'Sightseeing guide on / off', hKart: 'Close / open the info card', hTur: 'Start / stop the cinematic tour',
-		hEv: 'Return home (fresh battery)', hSes: 'All sound on / off', hPervane: 'Propeller sound on / off', hDilTus: 'Language: Türkçe / English', hEkran: 'This screen',
+		hEv: 'Return home (fresh battery)', hSes: 'All sound on / off', hPervane: 'Propeller sound on / off', hDilTus: 'Language: Türkçe / English', hSplatTus: 'Gaussian Splatting (around the church, trial)', hEkran: 'This screen',
 		hKumanda: 'Gamepad (Mode 2)', hSolCubuk: 'Altitude and turning', hSol: 'Left stick', hSagCubuk: 'Forward-back and sideways', hSag: 'Right stick',
 		hDugmeler: 'Photo · camera · race', hModGimbal: 'Flight mode · gimbal', hOmuz: 'LB / RB · D-pad',
 		hGeziListe: 'Sinasos sights', hZiyaretSifirla: 'reset visits', hAlbumBaslik: 'Sinasos album · photo missions', hAlbumSifirla: 'reset album',
@@ -267,6 +277,7 @@ const renderer = new THREE.WebGLRenderer( { antialias: true, logarithmicDepthBuf
 renderer.setPixelRatio( Math.min( devicePixelRatio, 1.5 ) );
 renderer.setSize( innerWidth, innerHeight );
 renderer.domElement.tabIndex = 0;
+renderer.localClippingEnabled = true;   // splat bölgesinde mesh'i kırpmak için (gauss)
 kap.appendChild( renderer.domElement );
 
 const UFUK = 0xd9e2ea, ZENIT = 0x6f9ed6;
@@ -351,10 +362,12 @@ function tilesKur( meta ) {
 		scene.traverse( o => {
 			if ( o.isMesh && o.geometry && ! o.geometry.boundsTree ) bvhKuyrugu.add( o.geometry );
 			if ( o.isMesh && o.material && o.material.map ) o.material.map.anisotropy = anizotropi;
+			if ( o.isMesh && o.material ) gauss.malzemeEkle( o.material );
 		} );
 	} );
 	tiles.addEventListener( 'dispose-model', ( { scene } ) => {
 		scene.traverse( o => {
+			if ( o.isMesh && o.material ) gauss.malzemeCikar( o.material );
 			if ( ! o.isMesh || ! o.geometry ) return;
 			bvhKuyrugu.delete( o.geometry );
 			if ( o.geometry.boundsTree ) o.geometry.disposeBoundsTree();
@@ -428,6 +441,64 @@ const dunya = ( e, n, h, hedef = new THREE.Vector3() ) => hedef.copy( cerceve.O 
 	.addScaledVector( cerceve.E, e ).addScaledVector( cerceve.N, n ).setY( h - arazi.m.originHeight );
 const _cg = new THREE.Vector3();
 const cografi = ( p, hedef = {} ) => tiles.ellipsoid.getPositionToCartographic( _cg.copy( p ).applyMatrix4( cerceve.ters ), hedef );
+
+// ---------------------------------------------------------------- Gaussian Splatting katmanı (deneme)
+// Kilise çevresinin splat modeli (oturumdaki 07_gaussian/betikler/splat_oyuna.py, oyunun ENU çerçevesinde: doğu, kuzey,
+// yukarı). Açıkken o bölgede Terra mesh'i çizilmez (dikey kırpma düzlemleri, clipIntersection), ama sahnede kalır:
+// çarpışma, yerden yükseklik ve görev görüş ışınları mesh'e atılmaya devam eder.
+const gauss = {
+	bilgi: null, mesh: null, cizici: null, acik: false, yuklendi: false, duzlemler: [], malzemeler: new Set(),
+	async hazirla() {
+		if ( ! AYAR.splat ) return;
+		this.bilgi = await fetch( `./splat/${ AYAR.splat }.json` ).then( r => r.ok ? r.json() : null ).catch( () => null );
+	},
+	kur() {   // çerçeve hazır olunca
+		if ( ! this.bilgi ) return;
+		const [ e, n ] = this.bilgi.merkez_enu, r = this.bilgi.mesh_yaricap, m = dunya( e, n, arazi.m.originHeight );
+		for ( let i = 0, K = 24; i < K; i ++ ) {
+			const a = i / K * 2 * Math.PI, d = new THREE.Vector3( Math.cos( a ), 0, Math.sin( a ) );
+			this.duzlemler.push( new THREE.Plane( d, - r - d.dot( m ) ) );   // içeride bütün düzlemlere uzaklık < 0: kırpılır
+		}
+	},
+	ac( acik ) {
+		if ( ! durum.hazir ) return;   // çerçeve ve kırpma düzlemleri kur() ile gelir
+		if ( ! this.bilgi ) { mesajGoster( t( 'splatYok' ) ); return; }
+		this.acik = acik;
+		if ( acik && ! this.mesh ) this.yukle();
+		if ( this.mesh ) this.mesh.visible = acik && this.yuklendi;
+		this.malzemeleriGuncelle();
+		mesajGoster( t( acik && ! this.yuklendi ? 'splatYukleniyor' : acik ? 'splatAcik' : 'splatKapali' ), '', acik && ! this.yuklendi ? 8000 : 2200 );
+	},
+	yukle() {
+		this.cizici = new SparkRenderer( { renderer } );
+		sahne.add( this.cizici );
+		this.mesh = new SplatMesh( { url: `./splat/${ AYAR.splat }.ply`, raycastable: false } );
+		this.mesh.matrixAutoUpdate = false;
+		this.mesh.matrix.makeBasis( cerceve.E, cerceve.N, YUKARI ).setPosition( cerceve.O );
+		this.mesh.visible = false;
+		sahne.add( this.mesh );
+		this.mesh.initialized.then( () => {
+			this.yuklendi = true;
+			this.mesh.visible = this.acik;
+			this.malzemeleriGuncelle();
+			if ( this.acik ) mesajGoster( t( 'splatAcik' ) );
+		} ).catch( e => {
+			console.error( e );
+			this.bilgi = null; this.acik = false;
+			mesajGoster( t( 'splatHata' ), 'uyari' );
+		} );
+	},
+	get kirp() { return this.acik && this.yuklendi; },
+	malzemeAyarla( m ) {
+		const yeni = this.kirp ? this.duzlemler : null;
+		if ( m.clippingPlanes === yeni ) return;
+		m.clippingPlanes = yeni; m.clipIntersection = true; m.needsUpdate = true;
+	},
+	// karo önbellekte durup sahneden çıkabildiği için malzemeler yüklenince kaydedilir, atılınca silinir
+	malzemeEkle( mat ) { for ( const m of [ mat ].flat() ) { this.malzemeler.add( m ); this.malzemeAyarla( m ); } },
+	malzemeCikar( mat ) { for ( const m of [ mat ].flat() ) this.malzemeler.delete( m ); },
+	malzemeleriGuncelle() { for ( const m of this.malzemeler ) this.malzemeAyarla( m ); },
+};
 
 // ---------------------------------------------------------------- ışın testi (çarpışma, yerden yükseklik)
 const isinci = new THREE.Raycaster();
@@ -553,6 +624,9 @@ let yardimAcik = true;
 
 addEventListener( 'keydown', e => {
 	if ( [ 'Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight' ].includes( e.code ) ) e.preventDefault();
+	// Ctrl alçaltma tuşu: alçalırken basılan oyun tuşları tarayıcı kısayolu olmasın (Ctrl+R yenileme, Ctrl+F arama, Ctrl+S, Ctrl+P ...).
+	// Ctrl+W, Ctrl+T ve Ctrl+N'yi tarayıcı sayfaya bırakmaz; Ctrl+W'ye karşı aşağıdaki beforeunload sorusu var.
+	if ( e.ctrlKey && ! yardimAcik ) e.preventDefault();
 	if ( tur.aktif ) { if ( ! tur.kayitta && ( e.code === 'Escape' || e.code === 'KeyC' ) ) tur.bitir(); return; }
 	if ( yardimAcik ) {
 		if ( e.code === 'KeyH' || e.code === 'Escape' || e.code === 'Enter' ) basla();
@@ -564,6 +638,10 @@ addEventListener( 'keydown', e => {
 } );
 addEventListener( 'keyup', e => tuslar.delete( e.code ) );
 addEventListener( 'blur', () => tuslar.clear() );
+// uçarken Ctrl ile alçalıp W ile ileri gitmek Chrome/Edge'de Ctrl+W: sekme kapanmadan önce "Siteden ayrılsın mı?" diye sorulur
+addEventListener( 'beforeunload', e => {
+	if ( durum.hazir && ! durum.yerde && ( tuslar.has( 'ControlLeft' ) || tuslar.has( 'ControlRight' ) ) ) { e.preventDefault(); e.returnValue = ''; }
+} );
 renderer.domElement.addEventListener( 'wheel', e => {
 	e.preventDefault();
 	durum.takipMesafe = THREE.MathUtils.clamp( durum.takipMesafe * ( e.deltaY > 0 ? 1.12 : 1 / 1.12 ), 2.5, 80 );
@@ -585,6 +663,7 @@ function tekSeferlik( kod ) {
 		case 'KeyU': ses.pervaneAc( ! ses.pervane ); mesajGoster( t( ses.pervane ? 'pervaneAcik' : 'pervaneKapali' ) ); break;
 		case 'KeyL': dilDegistir( dil === 'tr' ? 'en' : 'tr' ); break;
 		case 'KeyH': yardimAc(); break;
+		case 'KeyK': gauss.ac( ! gauss.acik ); break;
 	}
 }
 function modSec( mod ) {
@@ -630,7 +709,7 @@ function girdiOku() {
 	girdi.ileri = t( 'KeyW' ) + t( 'ArrowUp' ) - t( 'KeyS' ) - t( 'ArrowDown' );
 	girdi.yan = t( 'KeyD' ) - t( 'KeyA' );
 	girdi.donus = t( 'KeyE' ) + t( 'ArrowRight' ) - t( 'KeyQ' ) - t( 'ArrowLeft' );
-	girdi.yukari = t( 'Space' ) - t( 'ShiftLeft' ) - t( 'ShiftRight' );
+	girdi.yukari = t( 'ShiftLeft' ) + t( 'ShiftRight' ) + t( 'Space' ) - t( 'ControlLeft' ) - t( 'ControlRight' );   // Shift (Boşluk da) yüksel, Ctrl alçal
 	girdi.gimbal = t( 'KeyR' ) - t( 'KeyF' );
 	const k = kumandaOku();
 	if ( k ) for ( const a in k ) if ( Math.abs( k[ a ] ) > Math.abs( girdi[ a ] ) ) girdi[ a ] = k[ a ];
@@ -640,7 +719,7 @@ function girdiOku() {
 
 // ---------------------------------------------------------------- ses (pervane uğultusu)
 const ses = {
-	acik: true, pervane: guvenliOku( 'mustafapasa-drone-pervane' ) !== '0', ctx: null,
+	acik: true, pervane: guvenliOku( 'mustafapasa-drone-pervane' ) === '1', ctx: null,   // pervane sesi varsayılan kapalı (U ile açılır, seçim saklanır)
 	baslat() {
 		if ( this.ctx ) { this.ctx.resume(); return; }
 		try {
@@ -2040,7 +2119,7 @@ function fotoCek() {
 			fx: + ( W / 2 / Math.tan( yatayFov / 2 ) ).toFixed( 3 ), fy: + ( H / 2 / Math.tan( dikeyFov / 2 ) ).toFixed( 3 ), cx: W / 2, cy: H / 2,
 		},
 		yerel_cerceve: { origin_enlem: arazi.m.originLat, origin_boylam: arazi.m.originLon, origin_elipsoid_yuksekligi_m: arazi.m.originHeight },
-		not: 'Görüntü, DJI Terra 3D Tiles modelinden gimbal kamerasıyla işlenmiştir (bozulmasız iğne deliği kamera).',
+		not: 'Görüntü, DJI Terra 3D Tiles modelinden gimbal kamerasıyla işlenmiştir (bozulmasız iğne deliği kamera).' + ( gauss.kirp ? t( 'splatNot' ) : '' ),
 	};
 	const jsonBlob = new Blob( [ JSON.stringify( poz, null, 2 ) ], { type: 'application/json' } );
 	flasYap( 'rgba(255,255,255,.85)' );
@@ -2122,6 +2201,7 @@ function dongu() {
 			araziOrtusuKur();
 			gezi.kur();
 			gorev.kur();
+			gauss.kur();
 			durum.hazir = true;
 			if ( ! yardimAcik ) mesajGoster( t( 'havada' ), '', 4000 );
 		}
@@ -2170,6 +2250,7 @@ function dongu() {
 		gezi.veri = await fetch( AYAR.veri + 'noktalar.json' ).then( r => r.ok ? r.json() : null ).catch( () => null );
 		tur.veri = await fetch( AYAR.veri + AYAR.tur ).then( r => r.ok ? r.json() : null ).catch( () => null );
 		if ( tur.veri ) tur.hazirla();
+		await gauss.hazirla();
 	} catch ( e ) {
 		hataGoster( t( 'veriHata', e.message ) );
 		return;
@@ -2179,7 +2260,7 @@ function dongu() {
 } )();
 
 // test ve hata ayıklama için
-window.oyun = { durum, parkur, gezi, gorev, muzik, ses, tur, cerceve, get tiles() { return tiles; }, get arazi() { return arazi; }, get solma() { return solma; }, solmaBitir, dunya, enu, isin, THREE, renderer, draco, fpvKam, sahne,
+window.oyun = { durum, parkur, gezi, gorev, gauss, muzik, ses, tur, cerceve, get tiles() { return tiles; }, get arazi() { return arazi; }, get solma() { return solma; }, solmaBitir, dunya, enu, isin, THREE, renderer, draco, fpvKam, sahne,
 	// döngüyü elle ilerletir (tarayıcı sekmesi arka plandayken denemek için)
 	adim( n = 1 ) { for ( let i = 0; i < n; i ++ ) dongu(); },
 	isinla( e, n, yerden = 20 ) { dunya( e, n, arazi.yukseklik( e, n ) + yerden, durum.pos ); durum.yerde = false; durum.vel.set( 0, 0, 0 ); durum.kamYerlesti = false; },

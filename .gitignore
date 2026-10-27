@@ -9,3 +9,6 @@ video/ham/
 __pycache__/
 *.pyc
 .claude/settings.local.json
+
+# Gaussian Splatting deneme modeli (07_gaussian/betikler/splat_oyuna.py ile uretilir; buyuk, yalniz bu bilgisayarda)
+splat/

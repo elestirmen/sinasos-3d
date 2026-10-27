@@ -16,6 +16,24 @@ three.js, 3d-tiles-renderer ve three-mesh-bvh ile yazıldı. Kütüphaneler `lib
 
 `index.html` dosyasını çift tıklayarak açmak işe yaramaz. Tarayıcı güvenlik nedeniyle karoları yüklemez, sunucu şart.
 
+## İnternete açmak (Tailscale Funnel)
+
+Oyun bu bilgisayardan internete açılabilir: bağlantıyı alan herkes, Tailscale kurmadan, tarayıcısından oynar.
+Bilgisayarda Tailscale kurulu ve oturum açık olmalı.
+
+1. `INTERNETE_AC.bat` dosyasına çift tıkla. Sunucu yayın ayarıyla açılır (port 8090) ve Tailscale Funnel'ı başlatır.
+2. İlk seferde pencerede bir Tailscale bağlantısı çıkar: tarayıcıda açıp Funnel'a (gerekirse HTTPS sertifikalarına) izin ver. Bir kez yapılır.
+3. Pencerede `https://<bilgisayar-adı>.<ağ-adı>.ts.net/` biçiminde internet adresi yazar. Bu adresi paylaş.
+4. Pencereyi kapatınca oyun da Funnel da kapanır. Bilgisayar uyursa ya da kapanırsa oyuna erişilemez.
+
+Yayın ayarında (`sunucu.py --yayin`, `--funnel`) yalnız oyunun çalışması için gereken dosyalar verilir: `index.html`, `game.js`,
+lisanslar, `lib/`, `data/`, `muzik/`, `splat/`, `terra_b3dms/`. Klasör listesi kapalıdır; `BAP/`, `.git/`, `video/`, `araclar/`,
+karşılaştırma klasörleri ve notlar dışarıdan istenemez. Normal açılış (`BASLAT.bat`) eskisi gibidir.
+
+Hız sınırı bilgisayarın internet yükleme hızıdır; bir oyuncu uçtuğu bölgeye göre birkaç yüz MB karo indirebilir (splat açılırsa
++188 MB). Funnel trafiği Tailscale sunucularından geçer. Birkaç kişi için yeterli, kalabalık bir sınıf için zorlanabilir.
+Funnel'ı elle kapatmak gerekirse: `tailscale funnel reset`.
+
 ## Klasör yapısı
 
 ```
@@ -24,6 +42,7 @@ sinasos-3d/
 ├── game.js       oyunun tamamı (tek modül)
 ├── sunucu.py     yerel web sunucusu
 ├── BASLAT.bat    Windows başlatıcı
+├── INTERNETE_AC.bat  oyunu Tailscale Funnel ile internete açar (yalnız oyun dosyaları)
 ├── data/         DEM'den üretilen 5 m ızgara: arazi.bin, arazi.json, harita.png; gezi noktaları ve fotoğraf görevleri: noktalar.json;
 │                 sinematik tur: tur.json; görev deneme pozları: gorev_pozlari.json
 ├── muzik/        gezi ve tur müzikleri, künyeleri KUNYE.txt'de
@@ -68,7 +87,7 @@ Turkuaz ışık sütunları ve etiketler Mustafapaşa'nın simge yapılarını g
 
 Müzik iki yoldan gelir. `data/noktalar.json` içindeki `muzikler` tablosunda bir temaya (`ilahi`, `konak`, `ney`) kayıt tanımlıysa o dosya döngüde çalar, `kunye` satırı bilgi kartının altında görünür. Tanımlı değilse ya da dosya açılamazsa Web Audio ile çalınan özgün kısa ezgiler devreye girer (game.js, `TEMALAR`). Tek bir yapıya ayrı kayıt koymak için o noktanın `muzik` alanına dosya yolunu yaz (ör. `"muzik": "muzik/kilise.mp3"`). Telif hakkı sende ya da serbest lisanslı olmalı; CC BY kayıtlarda künye zorunludur (`muzik/KUNYE.txt`).
 
-Pervane uğultusu ayrı açılıp kapanır: uçarken `U` tuşu ya da yardım ekranındaki "Pervane sesi" kutusu (seçim hatırlanır). `M` bütün sesleri kapatır.
+Pervane uğultusu varsayılan olarak kapalıdır, ayrı açılıp kapanır: uçarken `U` tuşu ya da yardım ekranındaki "Pervane sesi" kutusu (seçim hatırlanır). `M` bütün sesleri kapatır.
 
 `data/noktalar.json` alanları: `id`, `ad`, `tur` (kilise, manastir, konak, universite, medrese, cami, vadi), `enlem`, `boylam`, `yaricap` (m), `alt` (dönem satırı), `metin` (paragraflar), `kaynak`, isteğe bağlı `muzik`, `duyma` (m, müziğin duyulmaya başladığı mesafe), `etiketYuksekligi` (m, varsayılan 40) ve `en` (İngilizce `ad`, `alt`, `metin`, `kaynak`).
 
@@ -132,7 +151,7 @@ Ayarları ölçmek için `araclar/olcum.js` (konsoldan `const O = await import('
 
 ## Lisanslar ve künyeler
 
-- Kod (`game.js`, `index.html`, `sunucu.py`, `BASLAT.bat`, `araclar/`): MIT, `LICENSE`.
+- Kod (`game.js`, `index.html`, `sunucu.py`, `BASLAT.bat`, `INTERNETE_AC.bat`, `araclar/`): MIT, `LICENSE`.
 - İçerik (gezi ve görev metinleri, veriler, tur yolu, arazi verisi, görseller, belgeler): CC BY 4.0, kapsam ve atıf biçimi `LICENSE-ICERIK.md` içinde.
 - Kütüphaneler (`lib/`): three.js (MIT), 3d-tiles-renderer (Apache 2.0), three-mesh-bvh (MIT), Draco çözücü (Apache 2.0); lisans metinleri `lib/` içinde.
 - Müzikler: her kaydın kendi lisansı, `muzik/KUNYE.txt` (CC BY 4.0 ve kamu malı kayıtlar; CC BY kayıtlarda künye zorunlu).
