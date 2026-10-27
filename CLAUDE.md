@@ -12,7 +12,7 @@ Kullanıcı bir akademisyen (uzaktan algılama, GNSS'siz İHA konumlandırma). O
 
 27 Ekim 2026'dan beri proje `C:\d_surucusu\sinasos-3d` klasöründe ve bir git deposu (GitHub hesabı `elestirmen`). Önceden Terra projesinin
 içindeki `E:\photogrametry\2026-Matrice-4E\ucuslar\2026-10-20_mustafapasa\03_terra\sinasos-obliq\sinasos-obliq\models\pc\0\oyun` klasöründeydi;
-kullanıcının isteğiyle taşındı (dosyalar SHA-256 ile doğrulandı). Eski yerde yalnızca taşındığını söyleyen bir OKUBENI kaldı.
+kullanıcının isteğiyle taşındı (dosyalar SHA-256 ile doğrulandı). Eski `oyun` klasörü (aynı içerik) silinme onayı bekliyor; yanında `OKUBENI_oyun_tasindi.txt` var. Claude onu silmedi (otomatik izin reddetti).
 
 ```
 sinasos-3d/
