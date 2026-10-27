@@ -129,7 +129,9 @@ Adres çubuğuna `?tileset=...` eklenerek farklı bir tileset denenebilir.
 
 ## Lisanslar ve künyeler
 
-- Projenin kendi kodu: Apache 2.0 (`LICENSE`). Bu lisans aşağıdaki üçüncü taraf dosyaları kapsamaz; onlar kendi lisanslarıyla gelir.
+- Kod (`game.js`, `index.html`, `sunucu.py`, `BASLAT.bat`, `araclar/`): MIT, `LICENSE`.
+- İçerik (gezi ve görev metinleri, veriler, tur yolu, arazi verisi, görseller, belgeler): CC BY 4.0, kapsam ve atıf biçimi `LICENSE-ICERIK.md` içinde.
 - Kütüphaneler (`lib/`): three.js (MIT), 3d-tiles-renderer (Apache 2.0), three-mesh-bvh (MIT), Draco çözücü (Apache 2.0); lisans metinleri `lib/` içinde.
-- Müzikler: `muzik/KUNYE.txt` (CC BY 4.0 ve kamu malı kayıtlar; CC BY kayıtlarda künye zorunlu).
+- Müzikler: her kaydın kendi lisansı, `muzik/KUNYE.txt` (CC BY 4.0 ve kamu malı kayıtlar; CC BY kayıtlarda künye zorunlu).
+- 3B model (`terra_b3dms`, depoda yok) ve ham uçuş verileri lisansa dahil değil.
 - Gezi metinleri kaynaklardan derlendi, kaynakları her kartın altında ve `data/noktalar.json`'da.
