@@ -129,6 +129,7 @@ Adres çubuğuna `?tileset=...` eklenerek farklı bir tileset denenebilir.
 
 ## Lisanslar ve künyeler
 
-- Kütüphaneler: three.js (MIT), 3d-tiles-renderer (Apache 2.0), three-mesh-bvh (MIT), Draco çözücü (Apache 2.0).
+- Projenin kendi kodu: Apache 2.0 (`LICENSE`). Bu lisans aşağıdaki üçüncü taraf dosyaları kapsamaz; onlar kendi lisanslarıyla gelir.
+- Kütüphaneler (`lib/`): three.js (MIT), 3d-tiles-renderer (Apache 2.0), three-mesh-bvh (MIT), Draco çözücü (Apache 2.0); lisans metinleri `lib/` içinde.
 - Müzikler: `muzik/KUNYE.txt` (CC BY 4.0 ve kamu malı kayıtlar; CC BY kayıtlarda künye zorunlu).
 - Gezi metinleri kaynaklardan derlendi, kaynakları her kartın altında ve `data/noktalar.json`'da.
