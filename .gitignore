@@ -1,0 +1,11 @@
+# Model: DJI Terra 3D Tiles çıktısı (4,6 GB). Yerel kopya bu klasörde durur, depoya girmez (README.md, "Model").
+terra_b3dms/
+model_yolu.txt
+
+# Videolar ve kayıt ara dosyaları (büyük; yalnız bu bilgisayarda)
+video/*.mp4
+video/ham/
+
+__pycache__/
+*.pyc
+.claude/settings.local.json

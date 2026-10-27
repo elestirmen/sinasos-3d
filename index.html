@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mustafapaşa Drone</title>
+<style>
+  :root {
+    --panel: rgba(14, 18, 24, 0.66);
+    --panel-kenar: rgba(255, 255, 255, 0.10);
+    --yazi: #f3f1ec;
+    --soluk: #a9b0b8;
+    --vurgu: #ff9a1f;
+    --iyi: #59d18c;
+    --kotu: #ff5a4f;
+    --gezi: #3fd0c9;
+    --font: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #d9e2ea; color: var(--yazi); font-family: var(--font); }
+  [hidden] { display: none !important; }
+  #sahne { position: fixed; inset: 0; }
+  #sahne canvas { display: block; width: 100%; height: 100%; outline: none; }
+  .panel { background: var(--panel); border: 1px solid var(--panel-kenar); border-radius: 12px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .sayi { font-variant-numeric: tabular-nums; }
+
+  /* sol ust: baslik ve durum */
+  #baslik { position: fixed; top: 14px; left: 14px; padding: 10px 14px; min-width: 210px; }
+  #baslik h1 { margin: 0; font-size: 15px; font-weight: 650; letter-spacing: .2px; }
+  #baslik .alt { margin-top: 3px; font-size: 12px; color: var(--soluk); }
+  #baslik .alt.uyari { color: #ffb3ad; }
+  #yuklemeCubuk { margin-top: 8px; height: 3px; border-radius: 2px; background: rgba(255,255,255,.12); overflow: hidden; }
+  #yuklemeCubuk i { display: block; height: 100%; width: 0; background: var(--vurgu); transition: width .3s; }
+
+  /* sag ust: mini harita */
+  #haritaKutu { position: fixed; top: 14px; right: 14px; padding: 8px; }
+  #harita { display: block; width: 210px; height: 232px; }
+  #haritaKutu .etiket { position: absolute; top: 12px; left: 14px; font-size: 11px; font-weight: 700; color: var(--yazi); text-shadow: 0 1px 2px #000; }
+
+  /* ust orta: parkur, gezi ve gorev */
+  #parkur, #gezi { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); padding: 8px 16px; display: none; align-items: center; gap: 16px; font-size: 14px; }
+  #parkur.acik, #gezi.acik { display: flex; }
+  #parkur .buyuk, #gezi .buyuk { font-size: 20px; font-weight: 700; }
+  .yonOk { width: 26px; height: 26px; display: inline-block; transition: transform .1s linear; color: var(--vurgu); }
+  #gOk { color: var(--gezi); }
+  #parkur .soluk, #gezi .soluk { color: var(--soluk); font-size: 12px; }
+  #gezi .buyuk { color: var(--gezi); }
+  #gezi #gAlbum { color: var(--iyi); }
+  #gorevPanel { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); padding: 7px 16px 8px; display: none; text-align: center; font-size: 13px; max-width: min(620px, 94vw); }
+  #gorevPanel.acik { display: block; }
+  #gpBaslik { font-weight: 650; }
+  #gpKosul { margin-top: 3px; font-size: 12px; }
+  #gpKosul span { margin: 0 6px; white-space: nowrap; }
+  #gpKosul .ok { color: var(--iyi); }
+  #gpKosul .yok { color: #ffb3ad; }
+  #gpIpucu { margin-top: 3px; color: var(--yazi); }
+  #gpIpucu.hazir { color: var(--iyi); font-weight: 700; }
+
+  /* sol orta: gezi bilgi karti */
+  #bilgiKart { position: fixed; left: 14px; top: 50%; width: min(380px, 42vw); max-height: 62vh; overflow: auto; padding: 16px 18px 12px; transform: translate(calc(-100% - 30px), -50%); transition: transform .45s cubic-bezier(.2,.8,.2,1); border-color: rgba(63, 208, 201, .35); }
+  #bilgiKart.acik { transform: translate(0, -50%); }
+  #bilgiKart .tur { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--gezi); }
+  #bilgiKart h2 { margin: 4px 0 2px; font-size: 20px; line-height: 1.25; }
+  #bilgiKart .alt { font-size: 12.5px; color: var(--soluk); margin-bottom: 10px; }
+  #bilgiKart p { margin: 0 0 10px; font-size: 13.5px; line-height: 1.55; }
+  #bilgiKart .kaynak { font-size: 11px; color: var(--soluk); line-height: 1.4; border-top: 1px solid var(--panel-kenar); padding-top: 8px; margin-top: 4px; }
+  #bMuzik { border-top: 0; padding-top: 2px; margin-top: 0; }
+  #bMuzik:empty { display: none; }
+  #bilgiKart .ipucu { font-size: 11px; color: var(--soluk); margin-top: 8px; }
+  #bGorev { margin: 2px 0 10px; padding: 10px 12px 2px; border-radius: 10px; background: rgba(89, 209, 140, .08); border: 1px solid rgba(89, 209, 140, .28); }
+  #bGorev .gUst { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--iyi); margin-bottom: 3px; }
+  #bGorev b { display: block; font-size: 14.5px; margin-bottom: 3px; }
+  #bGorev p { font-size: 13px; margin-bottom: 8px; }
+  #bGorev img { display: block; width: 100%; border-radius: 6px; margin-bottom: 10px; }
+
+  /* yardim ekraninda gezi listesi ve album */
+  .gezi { margin-top: 18px; font-size: 13.5px; }
+  .gezi h3 { margin: 0 0 6px; font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: var(--gezi); }
+  .gezi ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 34px; }
+  .gezi li { padding: 3px 0 3px 22px; position: relative; color: var(--soluk); }
+  .gezi li::before { content: ""; position: absolute; left: 2px; top: 8px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--gezi); }
+  .gezi li.gidildi { color: var(--yazi); }
+  .gezi li.gidildi::before { background: var(--vurgu); border-color: var(--vurgu); }
+  .gezi button, .album button { background: none; border: 0; color: var(--soluk); font: inherit; font-size: 12px; text-transform: none; letter-spacing: 0; text-decoration: underline; cursor: pointer; padding: 0; margin-left: 10px; }
+  .album { margin-top: 18px; font-size: 12.5px; }
+  .album h3 { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: var(--iyi); }
+  .album ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px 12px; }
+  .album li { color: var(--soluk); line-height: 1.3; cursor: help; }
+  .album li b { display: block; font-weight: 600; color: var(--soluk); margin-top: 4px; }
+  .album li span { font-size: 11px; }
+  .album li.tamam b { color: var(--yazi); }
+  .album .kare { aspect-ratio: 16 / 9; border-radius: 6px; border: 1px dashed rgba(255,255,255,.22); display: flex; align-items: center; justify-content: center; font-size: 20px; opacity: .55; overflow: hidden; }
+  .album li.tamam .kare { border: 1px solid rgba(89, 209, 140, .5); opacity: 1; }
+  .album .kare img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* alt orta: telemetri */
+  #telemetri { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); padding: 10px 6px; display: flex; gap: 0; }
+  #telemetri div { padding: 0 14px; border-left: 1px solid var(--panel-kenar); text-align: center; min-width: 74px; }
+  #telemetri div:first-child { border-left: 0; }
+  #telemetri b { display: block; white-space: nowrap; font-size: 19px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  #telemetri span { display: block; white-space: nowrap; font-size: 10.5px; color: var(--soluk); text-transform: uppercase; letter-spacing: .6px; margin-top: 2px; }
+  #telemetri .uyari b { color: var(--kotu); }
+
+  /* sol alt: konum */
+  #konum { position: fixed; bottom: 14px; left: 14px; padding: 8px 12px; font-size: 12px; color: var(--soluk); line-height: 1.55; }
+  #konum b { color: var(--yazi); font-weight: 600; }
+
+  /* sag alt: ipucu */
+  #ipucu { position: fixed; bottom: 14px; right: 14px; padding: 8px 12px; font-size: 12px; color: var(--soluk); }
+  kbd { display: inline-block; min-width: 20px; padding: 1px 6px; border-radius: 5px; border: 1px solid rgba(255,255,255,.25); border-bottom-width: 2px; background: rgba(255,255,255,.08); color: var(--yazi); font: 600 11.5px var(--font); text-align: center; }
+
+  /* orta: mesajlar, nisangah, flas */
+  #mesaj { position: fixed; top: 28%; left: 50%; transform: translateX(-50%); padding: 10px 18px; font-size: 16px; font-weight: 600; opacity: 0; transition: opacity .25s; pointer-events: none; white-space: nowrap; }
+  #mesaj.goster { opacity: 1; }
+  #mesaj.uyari { color: #ffd2cf; border-color: rgba(255, 90, 79, .5); }
+  #mesaj.iyi { color: #d7ffe7; border-color: rgba(89, 209, 140, .5); }
+  #nisangah { position: fixed; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px; display: none; pointer-events: none; }
+  #flas { position: fixed; inset: 0; pointer-events: none; opacity: 0; transition: opacity .35s; }
+  #gimbal { position: fixed; right: 14px; top: 50%; transform: translateY(-50%); width: 34px; height: 150px; padding: 6px; display: none; }
+  #gimbal i { position: absolute; left: 6px; right: 6px; height: 3px; border-radius: 2px; background: var(--vurgu); }
+  #gimbal span { position: absolute; left: 0; right: 0; bottom: -20px; text-align: center; font-size: 11px; color: var(--yazi); text-shadow: 0 1px 2px #000; }
+
+  /* yardim / baslangic ekrani */
+  #yardim { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(8, 11, 15, 0.55); z-index: 10; padding: 16px; }
+  #yardim.gizli { display: none; }
+  #yardim .kutu { position: relative; width: min(880px, 100%); max-height: 100%; overflow: auto; padding: 26px 30px; border-radius: 16px; }
+  #yardim h2 { margin: 0 0 4px; font-size: 24px; padding-right: 90px; }
+  #yardim p { margin: 0 0 18px; color: var(--soluk); font-size: 14px; line-height: 1.5; }
+  #dilSec { position: absolute; top: 24px; right: 28px; display: flex; border: 1px solid rgba(255,255,255,.25); border-radius: 8px; overflow: hidden; }
+  #dilSec button { background: none; border: 0; color: var(--soluk); font: 700 12px var(--font); padding: 6px 10px; cursor: pointer; }
+  #dilSec button.secili { background: rgba(255,255,255,.14); color: var(--yazi); }
+  .tuslar { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 34px; font-size: 13.5px; }
+  .tuslar div { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .tuslar h3 { grid-column: 1 / -1; margin: 12px 0 2px; font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: var(--vurgu); border: 0; }
+  .ayarlar { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-top: 20px; font-size: 13.5px; }
+  .ayarlar select { background: rgba(255,255,255,.08); color: var(--yazi); border: 1px solid rgba(255,255,255,.25); border-radius: 6px; padding: 5px 8px; font: inherit; }
+  .ayarlar select option { color: #111; }
+  #basla { margin-left: auto; background: var(--vurgu); color: #1a1205; border: 0; border-radius: 10px; padding: 11px 22px; font: 700 15px var(--font); cursor: pointer; }
+  #basla:hover { filter: brightness(1.08); }
+  #turBasla { margin-left: auto; background: none; color: var(--yazi); border: 1px solid rgba(255,255,255,.35); border-radius: 10px; padding: 10px 18px; font: 600 14px var(--font); cursor: pointer; }
+  #turBasla:hover { background: rgba(255,255,255,.08); }
+  #turBasla + #basla { margin-left: 0; }
+
+  /* sinematik tur: arayuz gizlenir, yazilar #turKatman tuvaline cizilir */
+  #turKatman { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; display: none; z-index: 5; }
+  body.sinematik #turKatman { display: block; }
+  body.sinematik #baslik, body.sinematik #haritaKutu, body.sinematik #parkur, body.sinematik #gezi, body.sinematik #gorevPanel, body.sinematik #telemetri,
+  body.sinematik #konum, body.sinematik #ipucu, body.sinematik #mesaj, body.sinematik #nisangah, body.sinematik #gimbal,
+  body.sinematik #bilgiKart { display: none !important; }
+  #hata { display: none; margin-top: 16px; padding: 12px 14px; border-radius: 10px; background: rgba(255, 90, 79, .18); border: 1px solid rgba(255, 90, 79, .5); color: #ffe1de; font-size: 13.5px; line-height: 1.5; }
+  @media (max-width: 760px) { .tuslar, .gezi ul { grid-template-columns: 1fr; } .album ul { grid-template-columns: 1fr 1fr; } #bilgiKart { width: calc(100vw - 28px); } #telemetri div { min-width: 0; padding: 0 8px; } #telemetri b { font-size: 15px; } #haritaKutu, #konum, #ipucu { display: none; } }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "./lib/three/build/three.module.js",
+    "three/addons/": "./lib/three/examples/jsm/",
+    "3d-tiles-renderer": "./lib/3d-tiles-renderer/index.js",
+    "3d-tiles-renderer/plugins": "./lib/3d-tiles-renderer/index.plugins.js",
+    "three-mesh-bvh": "./lib/three-mesh-bvh/index.module.js"
+  }
+}
+</script>
+</head>
+<body>
+<div id="sahne"></div>
+<canvas id="turKatman"></canvas>
+
+<div id="baslik" class="panel">
+  <h1>Mustafapaşa Drone</h1>
+  <div class="alt" id="durumYazi" data-t="baslatiliyor">Başlatılıyor…</div>
+  <div class="alt" id="bellekYazi"></div>
+  <div id="yuklemeCubuk"><i></i></div>
+</div>
+
+<div id="haritaKutu" class="panel"><span class="etiket" data-t="kuzeyK">K ▲</span><canvas id="harita" width="420" height="464"></canvas></div>
+
+<div id="parkur" class="panel">
+  <div><div class="soluk" data-t="hHalka">Halka</div><div class="buyuk sayi" id="pHalka">0/10</div></div>
+  <div><div class="soluk" data-t="hSure">Süre</div><div class="buyuk sayi" id="pSure">0:00.0</div></div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <svg id="yonOk" class="yonOk" viewBox="0 0 24 24"><path d="M12 2 L20 20 L12 15 L4 20 Z" fill="currentColor"/></svg>
+    <div><div class="soluk" id="pHedefEtiket">Sonraki halka</div><div class="sayi" id="pMesafe">–</div></div>
+  </div>
+  <div><div class="soluk" data-t="hEnIyi">En iyi</div><div class="sayi" id="pEnIyi">–</div></div>
+</div>
+
+<div id="gezi" class="panel">
+  <div><div class="soluk" data-t="hGezi">Gezi</div><div class="buyuk sayi" id="gSayi">0/0</div></div>
+  <div><div class="soluk" data-t="hAlbum">Albüm</div><div class="buyuk sayi" id="gAlbum">0/0</div></div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <svg id="gOk" class="yonOk" viewBox="0 0 24 24"><path d="M12 2 L20 20 L12 15 L4 20 Z" fill="currentColor"/></svg>
+    <div><div class="soluk" id="gEtiket">Sonraki yer</div><div id="gHedef">–</div></div>
+  </div>
+</div>
+
+<div id="gorevPanel" class="panel">
+  <div id="gpBaslik"></div>
+  <div id="gpKosul"></div>
+  <div id="gpIpucu"></div>
+</div>
+
+<div id="bilgiKart" class="panel">
+  <div class="tur" id="bTur"></div>
+  <h2 id="bAd"></h2>
+  <div class="alt" id="bAlt"></div>
+  <div id="bMetin"></div>
+  <div id="bGorev" hidden></div>
+  <div class="kaynak" id="bKaynak"></div>
+  <div class="kaynak" id="bMuzik"></div>
+  <div class="ipucu" data-h="hKartIpucu"><kbd>B</kbd> kartı kapat · <kbd>M</kbd> sesi kapat</div>
+</div>
+
+<div id="telemetri" class="panel">
+  <div id="tAgl"><b>0.0</b><span data-t="hYerden">Yerden m</span></div>
+  <div><b id="tKot">0</b><span data-t="hKot">Kot m</span></div>
+  <div><b id="tHiz">0.0</b><span data-t="hHiz">Hız m/s</span></div>
+  <div><b id="tDikey">0.0</b><span data-t="hDikey">Dikey m/s</span></div>
+  <div><b id="tYon">0°</b><span data-t="hYon">Yön</span></div>
+  <div><b id="tMesafe">0</b><span data-t="hEve">Eve m</span></div>
+  <div><b id="tMod">Normal</b><span data-t="hMod">Mod</span></div>
+  <div id="tBat"><b>100%</b><span data-t="hBatarya">Batarya</span></div>
+</div>
+
+<div id="konum" class="panel">
+  <div><span data-t="hEnlem">Enlem</span> <b class="sayi" id="kEnlem">–</b></div>
+  <div><span data-t="hBoylam">Boylam</span> <b class="sayi" id="kBoylam">–</b></div>
+  <div><span data-t="hKamera">Kamera</span> <b id="kKamera" data-t="takip">Takip</b> · <span data-t="hGimbal">Gimbal</span> <b class="sayi" id="kGimbal">-15°</b></div>
+</div>
+
+<div id="ipucu" class="panel" data-h="hIpucu"><kbd>H</kbd> Yardım · <kbd>N</kbd> Gezi · <kbd>G</kbd> Parkur · <kbd>P</kbd> Fotoğraf</div>
+
+<div id="mesaj" class="panel"></div>
+<svg id="nisangah" viewBox="0 0 46 46" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.6">
+  <path d="M4 14 V4 H14 M32 4 H42 V14 M42 32 V42 H32 M14 42 H4 V32"/><circle cx="23" cy="23" r="2.2" fill="rgba(255,255,255,.85)" stroke="none"/>
+</svg>
+<div id="gimbal" class="panel"><i></i><span id="gimbalYazi">-15°</span></div>
+<div id="flas"></div>
+
+<div id="yardim">
+  <div class="kutu panel">
+    <div id="dilSec"><button type="button" data-dil="tr" class="secili">TR</button><button type="button" data-dil="en">EN</button></div>
+    <h2 data-t="hBaslik">Mustafapaşa üzerinde uçuş</h2>
+    <p data-h="hGiris">Matrice 4E ile çekilen 6875 fotoğraftan üretilen 3B modelin üzerinde serbest uçuş yapabilir ya da halka parkurunu tamamlamaya çalışabilirsin. Turkuaz ışıklar Mustafapaşa'nın (Sinasos) simge yapılarını gösteriyor: yanlarına uçunca müzik başlar ve yapının hikâyesi açılır. Fotoğraf görevlerini doğru yerden ve açıyla çekerek kendi Sinasos albümünü oluşturabilirsin. Drone ev noktasında yerde bekliyor, kalkmak için <kbd>Boşluk</kbd> tuşuna bas.</p>
+    <div class="tuslar">
+      <h3 data-t="hUcus">Uçuş</h3>
+      <div><span data-t="hIleri">İleri / geri</span><span><kbd>W</kbd> <kbd>S</kbd></span></div>
+      <div><span data-t="hKay">Sola / sağa kay</span><span><kbd>A</kbd> <kbd>D</kbd></span></div>
+      <div><span data-t="hDon">Sola / sağa dön</span><span><kbd>Q</kbd> <kbd>E</kbd></span></div>
+      <div><span data-t="hYuksel">Yüksel / alçal (kalkış, iniş)</span><span><kbd data-t="hBosluk">Boşluk</kbd> <kbd>Shift</kbd></span></div>
+      <div><span data-t="hModlar">Uçuş modu: Cine, Normal, Spor</span><span><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd></span></div>
+      <div><span data-t="hOklar">Ok tuşları da ileri-geri ve dönüş yapar</span><span><kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd></span></div>
+      <h3 data-t="hDiger">Kamera ve diğerleri</h3>
+      <div><span data-t="hKameraTus">Takip / FPV kamera</span><span><kbd>V</kbd></span></div>
+      <div><span data-t="hGimbalTus">Gimbal yukarı / aşağı</span><span><kbd>R</kbd> <kbd>F</kbd></span></div>
+      <div><span data-t="hTakipMesafe">Takip mesafesi</span><span data-t="hTeker">Fare tekerleği</span></div>
+      <div><span data-t="hFoto">Fotoğraf + konum bilgisi (PNG ve JSON, ilk seferde kayıt klasörü sorulur); görevleri de bununla çekersin</span><span><kbd>P</kbd></span></div>
+      <div><span data-t="hParkur">Halka parkurunu başlat / kapat</span><span><kbd>G</kbd></span></div>
+      <div><span data-t="hRehber">Gezi rehberi aç / kapat</span><span><kbd>N</kbd></span></div>
+      <div><span data-t="hKart">Gezi bilgi kartını kapat / aç</span><span><kbd>B</kbd></span></div>
+      <div><span data-t="hTur">Sinematik tur başlat / bitir</span><span><kbd>C</kbd></span></div>
+      <div><span data-t="hEv">Eve dön (yeni batarya)</span><span><kbd>T</kbd></span></div>
+      <div><span data-t="hSes">Bütün sesler aç / kapat</span><span><kbd>M</kbd></span></div>
+      <div><span data-t="hPervane">Pervane sesi aç / kapat</span><span><kbd>U</kbd></span></div>
+      <div><span data-t="hDilTus">Dil: Türkçe / English</span><span><kbd>L</kbd></span></div>
+      <div><span data-t="hEkran">Bu ekran</span><span><kbd>H</kbd></span></div>
+      <h3 data-t="hKumanda">Oyun kumandası (Mod 2)</h3>
+      <div><span data-t="hSolCubuk">Yükseklik ve dönüş</span><span data-t="hSol">Sol çubuk</span></div>
+      <div><span data-t="hSagCubuk">İleri-geri ve yana</span><span data-t="hSag">Sağ çubuk</span></div>
+      <div><span data-t="hDugmeler">Fotoğraf · kamera · parkur</span><span>A · B · Y</span></div>
+      <div><span data-t="hModGimbal">Uçuş modu · gimbal</span><span data-t="hOmuz">LB / RB · yön tuşları</span></div>
+    </div>
+    <div class="gezi">
+      <h3><span data-t="hGeziListe">Sinasos gezisi</span> · <span id="geziSayi">0/0</span><button id="geziSifirla" type="button" data-t="hZiyaretSifirla">ziyaretleri sıfırla</button></h3>
+      <ul id="geziListe"></ul>
+    </div>
+    <div class="album">
+      <h3><span data-t="hAlbumBaslik">Sinasos albümü · fotoğraf görevleri</span> · <span id="albumSayi">0/0</span><button id="albumSifirla" type="button" data-t="hAlbumSifirla">albümü sıfırla</button></h3>
+      <ul id="albumListe"></ul>
+    </div>
+    <div class="ayarlar">
+      <label><span data-t="hKalite">Görüntü kalitesi</span>
+        <select id="kalite">
+          <option value="dusuk" data-t="hDusuk">Düşük (hızlı, en çok 1 GB)</option>
+          <option value="orta" selected data-t="hOrta">Orta (en çok 2 GB)</option>
+          <option value="yuksek" data-t="hYuksek">Yüksek (en çok 3 GB, güçlü ekran kartı)</option>
+          <option value="ultra" data-t="hUltra">Ultra (en çok 6 GB, 12 GB ve üstü ekran kartı)</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="sesAcik" checked> <span data-t="hSesAyar">Ses</span></label>
+      <label><input type="checkbox" id="pervaneAcik" checked> <span data-t="hPervaneAyar">Pervane sesi</span></label>
+      <label><input type="checkbox" id="muzikAcik" checked> <span data-t="hMuzikAyar">Gezi müziği</span></label>
+      <button id="turBasla" type="button" data-t="hTurDugme">Sinematik tur</button>
+      <button id="basla" data-t="hBasla">Uçuşa başla</button>
+    </div>
+    <div id="hata"></div>
+  </div>
+</div>
+
+<script type="module" src="./game.js"></script>
+</body>
+</html>

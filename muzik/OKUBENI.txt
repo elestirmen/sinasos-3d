@@ -1,0 +1,15 @@
+Gezi noktalarinda calan ses dosyalari
+
+Kunye, lisans ve kaynaklar: KUNYE.txt
+
+Hangi kaydin nerede calacagi data/noktalar.json icindeki "muzikler" tablosunda:
+  ilahi -> kiliseler ve manastir, konak -> konaklar ve universite,
+  ney -> medrese ve cami, giris -> kalkista acilan karsilama karti.
+Her kayitta "dosya" (bu klasordeki ses dosyasi), "hacim" (0-1) ve "kunye" var.
+
+Bir kayit tanimli degilse ya da dosya acilamazsa oyun kendi urettigi kisa ezgiyi calar
+(game.js, TEMALAR). Karsilama kartinda dosya yoksa muzik calmaz.
+
+Tek bir yapiya ayri kayit koymak icin o noktaya "muzik": "muzik/dosya.mp3" satiri eklenir.
+Telif hakki sende olan ya da serbest lisansli (CC0, CC BY, kamu mali) kayitlar kullan;
+CC BY kayitlarda kunye zorunlu.

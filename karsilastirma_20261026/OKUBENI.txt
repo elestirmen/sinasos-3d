@@ -1,0 +1,44 @@
+Mustafapasa Drone: grafik kalitesi once / sonra karsilastirmasi (26 Ekim 2026)
+
+Sorun: model oyunda kaba, dusuk poligonlu gorunuyordu.
+
+Teshis
+- Karo onbellegi (LRU) dolmuyordu: eski ayarlarla 4 test noktasinda ve 31 noktalik
+  uclusta reddedilen karo sayisi hep 0, kullanilan karolar en fazla 191 MB.
+- Asil neden ayrinti duzeyi secimiydi: errorTarget 8 idi ve CSS cozunurlugu
+  (1024x768) kullaniliyordu, oysa tuval 1,5 kat (1536x1152) ciziliyor.
+  Terra'nin geometricError degerleri kucuk oldugu icin yakin planda bile
+  cogunlukla L14-L18 karolari seciliyordu (en ince seviye L21).
+
+Degisiklikler (game.js, index.html, sunucu.py)
+- Kalite: Dusuk errorTarget 6 / 1 GB, Orta 3 / 2 GB, Yuksek 2 / 3 GB,
+  Ultra 1 / 6 GB ve ekranin kendi piksel orani (4K %175 ekranda tam cozunurluk).
+  errorTarget artik cizim pikseli cinsinden, bellek = karo onbellegi siniri.
+  Secilen kalite bir sonraki acilista hatirlanir.
+- Cozunurluk: tiles.setResolution artik cizim tamponu boyutunu kullaniyor.
+- Dokulara anizotropik suzme (egik bakista zemin netlesiyor).
+- Sol ust panelde onbellek dolulugu; dolarsa kirmizi uyari.
+- sunucu.py: HTTP/1.1 (baglanti yeniden kullanimi) ve tarayici 127.0.0.1 ile
+  aciliyor. Once localhost uzerinden saniyede 19 karo geliyordu (Windows once
+  IPv6 deniyor, her yeni baglanti ~0,3 sn bekliyordu); simdi yuzlerce.
+
+Dosyalar
+- karsilastirma_A.jpg  ev noktasi, yerden 25 m, takip kamerasi
+- karsilastirma_B.jpg  koy ici, yerden 10 m, takip kamerasi
+- karsilastirma_C.jpg  guneyden genel bakis, yerden 90 m
+- karsilastirma_D.jpg  FPV, yerden 40 m, gimbal -45 derece
+  Sutunlar: ONCE | Orta | Yuksek | Ultra. Ust sira tam kare, alt sira turuncu
+  cerceveli bolgenin yakin plani. Hepsi 1024x768 pencerede, ayni nokta, ayni yon,
+  ayni kamera; kareler oyunun kendi tuvalinden alindi (Ultra tuvali 1792x1344,
+  digerleri 1536x1152; yakin planda ayni sahne parcasi kirpildi).
+- Yakin planda (B) Orta, Yuksek ve Ultra neredeyse ayni: orada zaten en ince
+  karolar yuklu, sinir modelin kendi cozunurlugu. Ultra'nin farki orta ve uzak
+  mesafede (C).
+
+Olcumler (4K tam ekran taklidi, 31 noktalik ucus)
+- Kullanilan karolar en fazla: Orta 0,62 GB, Yuksek 1,06 GB, Ultra 4,25 GB;
+  hicbirinde reddedilen karo yok.
+- GPU suresi kare basina: Orta ~3 ms, Yuksek ~4 ms, Ultra 5-6 ms.
+
+FPS bu testte olculemedi: Claude'un tarayici paneli en cok ~32 FPS ciziyor.
+Kendi tarayicinda sol ustteki FPS degerine bakmak yeterli.

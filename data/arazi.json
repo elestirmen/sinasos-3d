@@ -1,0 +1,14 @@
+{
+ "aciklama": "Terra DEM (DTM) yerel ENU izgarasi. Satir 0 = guney, sutun 0 = bati. Once uint16 yukseklik (dm, hBase uzerine; 65535 = veri yok), sonra uint8 ucus siniri, sonra uint8 kapsama.",
+ "originLat": 38.58502804336703,
+ "originLon": 34.89653507000245,
+ "originHeight": 1150.0,
+ "e0": -855.0,
+ "n0": -960.0,
+ "cell": 5.0,
+ "cols": 344,
+ "rows": 381,
+ "hBase": 1147,
+ "hMin": 1148.7197760087026,
+ "hMax": 1265.6902490234374
+}

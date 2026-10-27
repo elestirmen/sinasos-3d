@@ -1,0 +1,7 @@
+*.bin binary
+*.b3dm binary
+*.wasm binary
+*.mp3 binary
+*.ogg binary
+*.png binary
+*.jpg binary

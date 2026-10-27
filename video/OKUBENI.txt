@@ -1,0 +1,56 @@
+Sinematik tur videolari (27 Ekim 2026)
+
+mustafapasa_sinematik_tur_v2.mp4   (guncel surum; videolar GitHub deposunda yok, yalniz bu bilgisayarda)
+  1920x1080, 30 kare/sn, 3:40 (6600 kare), H.264 (x264, CRF 19) + AAC 192 kbps stereo.
+  Muzik: "Nomadic Camp", Sascha Ende (ende.app), CC BY 4.0 (kunye videonun sonunda yazili;
+  YouTube'a konursa aciklamaya da yazilmali: "Nomadic Camp by Sascha Ende, ende.app, License: CC BY 4.0").
+  Kurgu: 23 plan, kesmeler muzigin olcu baslarina oturtuldu (~95,7 BPM, olcu 2,508 sn):
+    giris 0-22 sn         acilis (bütün koy), plato kenarindan yukselis
+    yukselen 22-47 sn     kiliseye tele donus, Cami-i Kebir (tele), medrese tepeden
+    ana bolum 47-145 sn   cadde gecisi, konaklar (yanal kayis), universite (vinc), kuzey gecisi,
+                          Beydere kanyonu, Aziz Vasilios, kuzey panoramasi, koyun dogusu,
+                          konaklar tepeden, guney gecisi, Manastir Vadisi'ne giris
+    ara bolum 145-165 sn  Manastir Vadisi ve Aziz Stefanos, Aziz Nikolaos
+    doruk 165-205 sn      vadiden koye alcak donus, meydan cevresinde donus, kanyon ustunden
+                          koye, koyun cevresinde buyuk donus
+    kapanis 205-220 sn    geri cekilme, "Mustafapasa / Sinasos" ve kunye
+  Cekim: plana gore lens (tele 26-34, genis 56-64 derece), hareket bulanikligi (kare basina
+  4 alt kare, 180 derece kapak), renk duzenlemesi ve vinyet.
+
+mustafapasa_sinematik_tur.mp4   (ilk surum, 3:09)
+  Tek kesintisiz plan, muzik: Huseyni Saz Semaisi (kamu mali). Kullanici muzigi eski,
+  cekimleri gelistirilebilir buldu; yerine v2 yapildi. Kamera yolu: data/tur_v1.json.
+
+deneme_yeni_cekimler.mp4
+  v2 cekim dilinin 48 saniyelik muziksiz denemesi (kullanici bu yonde devam dedi).
+
+Nasil uretildi
+  Kamera yolu: data/tur.json, araclar/tur_uret.py ile (planlar PLANLAR, muzige gore sira ve
+  sureler KURGU ve MUZIK; her plan icin hiz, araziye uzaklik ve kapsama denetimi).
+  Kare kare cizim: oyunun tur.kaydet() islevi. Her karede ve alt karede karolar tamamen
+  yuklenene kadar beklenir (Ultra ayrinti, errorTarget 1), alt kareler ortalanir, kare
+  tarayicinin donanim H.264 kodlayicisiyla (WebCodecs) kodlanip yerel aliciya gonderilir.
+  Kare hizi makineden bagimsizdir. v2 kaydi 11 parcada ~12 dakika surdu.
+
+Yeniden uretmek (proje klasorunden, C:\d_surucusu\sinasos-3d)
+  1. python sunucu.py 8000           (oyun)
+     python araclar/kayit_alici.py   (alici, 8765; ciktilar video/ham/ altina)
+  2. Tarayicida http://127.0.0.1:8000/ ac, konsola:
+       await oyun.tur.kaydet({ bicim: 'h264', bulanik: 4, adres: 'http://127.0.0.1:8765/ekle?oturum=tur' })
+     (bas / son parametreleriyle parca parca da alinabilir; parca dosyalari sirayla birlestirilir)
+  3. C:\ffmpeg\bin\ffmpeg.exe -framerate 30 -i video\ham\tur.h264 -i muzik\nomadic_camp_sascha_ende.mp3
+       -map 0:v -map 1:a -c:v libx264 -preset slow -crf 19 -pix_fmt yuv420p -c:a aac -b:a 192k
+       -t 220 -movflags +faststart video\cikti.mp4
+  Onizleme icin tek kare: oyun.tur.kaydet({ bas: 26, son: 26.06, fps: 25, adres: 'http://127.0.0.1:8765/kaydet?klasor=onizleme' })
+  Baska bir tur dosyasini oyunda denemek: http://127.0.0.1:8000/?tur=tur_v1.json
+
+Notlar
+  - Turda modelin disi pus rengindedir (bej zemin duzlemi gizlenir), fotogrametri modelindeki
+    delikler DTM'den uretilen krem renkli bir arazi ortusuyle kapanir. Dik kaya duvarlarinda
+    (kanyon, kilise arkasi) delikler cok; alcak ve yakin planlarda bu dolgu gorunur.
+  - Muzik dosyasi sayfadaki 128 kbps oynatici dosyasi; yuksek kaliteli surum ende.app'teki
+    "Download for free" dugmesiyle alinip ayni adla muzik/ klasorune konursa 3. adim yeniden
+    calistirilir (goruntu yeniden cizilmez).
+  - Claude'un tarayici paneli gizliyken setTimeout ve JPEG kodlama cok yavasliyor; bu yuzden
+    kayitta bekleme MessageChannel ile, kodlama WebCodecs ile yapiliyor.
+  - Paylasim icin dosya buyukse daha kucuk bir surum: ayni komutta -crf 24 (ya da -vf scale=1280:-2).

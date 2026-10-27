@@ -1,0 +1,1108 @@
+{
+ "aciklama": "Sinematik tur. Bu dosya araclar/tur_uret.py ile üretildi; kam ve bak ENU metre + elipsoid yüksekliği, t plan içindeki saniye.",
+ "fov": 52,
+ "sis": [
+  650,
+  2600
+ ],
+ "renk": "contrast(1.08) saturate(1.15) sepia(0.06) brightness(1.03)",
+ "vinyet": 0.35,
+ "muzik": {
+  "dosya": "muzik/nomadic_camp_sascha_ende.mp3",
+  "hacim": 0.55
+ },
+ "cekimler": [
+  {
+   "ad": "acilis",
+   "sure": 11.979,
+   "fov": 55,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      -560,
+      -640,
+      1471.3
+     ],
+     "bak": [
+      100,
+      -120,
+      1211.7
+     ]
+    },
+    {
+     "t": 11.979,
+     "kam": [
+      -450,
+      -510,
+      1437.1
+     ],
+     "bak": [
+      100,
+      -120,
+      1211.7
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "yukselis",
+   "sure": 10.032,
+   "fov": 50,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      -235,
+      -150,
+      1233.0
+     ],
+     "bak": [
+      63,
+      -173,
+      1209.3
+     ]
+    },
+    {
+     "t": 10.032,
+     "kam": [
+      -125,
+      -165,
+      1264.6
+     ],
+     "bak": [
+      63,
+      -173,
+      1192.3
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "kilise_tele",
+   "sure": 10.032,
+   "fov": 26,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      -92.0,
+      -229.4,
+      1296.7
+     ],
+     "bak": [
+      63,
+      -173,
+      1190.3
+     ]
+    },
+    {
+     "t": 3.344,
+     "kam": [
+      -69.4,
+      -271.5,
+      1297.5
+     ],
+     "bak": [
+      63,
+      -173,
+      1190.3
+     ]
+    },
+    {
+     "t": 6.688,
+     "kam": [
+      -35.5,
+      -305.4,
+      1290.2
+     ],
+     "bak": [
+      63,
+      -173,
+      1190.3
+     ]
+    },
+    {
+     "t": 10.032,
+     "kam": [
+      6.6,
+      -328.0,
+      1289.5
+     ],
+     "bak": [
+      63,
+      -173,
+      1190.3
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "cami",
+   "sure": 7.524,
+   "fov": 34,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      215,
+      -235,
+      1281.9
+     ],
+     "bak": [
+      132,
+      -163,
+      1208.6
+     ]
+    },
+    {
+     "t": 7.524,
+     "kam": [
+      195,
+      -255,
+      1263.0
+     ],
+     "bak": [
+      132,
+      -163,
+      1204.6
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "meydan_tepe",
+   "sure": 7.524,
+   "fov": 50,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      147,
+      -170.5,
+      1321.6
+     ],
+     "bak": [
+      146.8,
+      -169.0,
+      1191.2
+     ]
+    },
+    {
+     "t": 1.881,
+     "kam": [
+      147,
+      -170.5,
+      1321.6
+     ],
+     "bak": [
+      146.7,
+      -169.0,
+      1191.2
+     ]
+    },
+    {
+     "t": 3.762,
+     "kam": [
+      147,
+      -170.5,
+      1321.6
+     ],
+     "bak": [
+      146.6,
+      -169.1,
+      1191.2
+     ]
+    },
+    {
+     "t": 5.643,
+     "kam": [
+      147,
+      -170.5,
+      1321.6
+     ],
+     "bak": [
+      146.5,
+      -169.2,
+      1191.2
+     ]
+    },
+    {
+     "t": 7.524,
+     "kam": [
+      147,
+      -170.5,
+      1321.6
+     ],
+     "bak": [
+      146.4,
+      -169.2,
+      1191.2
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "cadde",
+   "sure": 5.016,
+   "fov": 62,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      35,
+      -232,
+      1225.5
+     ],
+     "bak": [
+      161,
+      -172,
+      1199.9
+     ]
+    },
+    {
+     "t": 5.016,
+     "kam": [
+      128,
+      -222,
+      1228.2
+     ],
+     "bak": [
+      132,
+      -163,
+      1206.6
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "konak_yan",
+   "sure": 10.032,
+   "fov": 38,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      225,
+      -325,
+      1256.8
+     ],
+     "bak": [
+      290,
+      -397,
+      1206.4
+     ]
+    },
+    {
+     "t": 10.032,
+     "kam": [
+      335,
+      -335,
+      1274.7
+     ],
+     "bak": [
+      290,
+      -397,
+      1206.4
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "vinc",
+   "sure": 10.032,
+   "fov": 45,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      235,
+      -125,
+      1322.5
+     ],
+     "bak": [
+      161,
+      -47,
+      1195.9
+     ]
+    },
+    {
+     "t": 10.032,
+     "kam": [
+      210,
+      -85,
+      1242.7
+     ],
+     "bak": [
+      161,
+      -47,
+      1197.9
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "kuzey_gecis",
+   "sure": 5.016,
+   "fov": 64,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      150,
+      50,
+      1233.4
+     ],
+     "bak": [
+      110,
+      330,
+      1187.0
+     ]
+    },
+    {
+     "t": 5.016,
+     "kam": [
+      115,
+      250,
+      1232.6
+     ],
+     "bak": [
+      60,
+      520,
+      1146.9
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "kanyon",
+   "sure": 12.54,
+   "fov": 58,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      -15,
+      430,
+      1205
+     ],
+     "bak": [
+      45,
+      510,
+      1149.9
+     ]
+    },
+    {
+     "t": 5.016,
+     "kam": [
+      40,
+      485,
+      1203
+     ],
+     "bak": [
+      75,
+      570,
+      1143.6
+     ]
+    },
+    {
+     "t": 8.778,
+     "kam": [
+      62,
+      528,
+      1202
+     ],
+     "bak": [
+      95,
+      610,
+      1151.8
+     ]
+    },
+    {
+     "t": 12.54,
+     "kam": [
+      70,
+      560,
+      1203
+     ],
+     "bak": [
+      92,
+      603,
+      1156.6
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "vasilios",
+   "sure": 10.032,
+   "fov": 40,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      40,
+      540,
+      1235.3
+     ],
+     "bak": [
+      92,
+      603,
+      1158.6
+     ]
+    },
+    {
+     "t": 10.032,
+     "kam": [
+      25,
+      625,
+      1242.6
+     ],
+     "bak": [
+      92,
+      603,
+      1158.6
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "panorama",
+   "sure": 12.54,
+   "fov": 50,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      -35,
+      700,
+      1318.8
+     ],
+     "bak": [
+      100,
+      -120,
+      1211.7
+     ]
+    },
+    {
+     "t": 12.54,
+     "kam": [
+      -50,
+      540,
+      1361.9
+     ],
+     "bak": [
+      60,
+      -160,
+      1192.0
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "koy_dogu",
+   "sure": 10.032,
+   "fov": 50,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      389.3,
+      224.7,
+      1378.9
+     ],
+     "bak": [
+      100,
+      -120,
+      1211.7
+     ]
+    },
+    {
+     "t": 3.341,
+     "kam": [
+      461.0,
+      148.7,
+      1380.5
+     ],
+     "bak": [
+      100,
+      -120,
+      1211.7
+     ]
+    },
+    {
+     "t": 6.691,
+     "kam": [
+      513.2,
+      58.2,
+      1386.1
+     ],
+     "bak": [
+      100,
+      -120,
+      1211.7
+     ]
+    },
+    {
+     "t": 10.032,
+     "kam": [
+      543.2,
+      -41.9,
+      1396.7
+     ],
+     "bak": [
+      100,
+      -120,
+      1211.7
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "tepe_konaklar",
+   "sure": 7.524,
+   "fov": 50,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      260,
+      -340.5,
+      1330.7
+     ],
+     "bak": [
+      259.1,
+      -340.3,
+      1196.3
+     ]
+    },
+    {
+     "t": 1.886,
+     "kam": [
+      260,
+      -340.5,
+      1330.7
+     ],
+     "bak": [
+      259.1,
+      -340.5,
+      1196.3
+     ]
+    },
+    {
+     "t": 3.762,
+     "kam": [
+      260,
+      -340.5,
+      1330.7
+     ],
+     "bak": [
+      259.2,
+      -340.6,
+      1196.3
+     ]
+    },
+    {
+     "t": 5.638,
+     "kam": [
+      260,
+      -340.5,
+      1330.7
+     ],
+     "bak": [
+      259.3,
+      -340.7,
+      1196.3
+     ]
+    },
+    {
+     "t": 7.524,
+     "kam": [
+      260,
+      -340.5,
+      1330.7
+     ],
+     "bak": [
+      259.4,
+      -340.8,
+      1196.3
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "guney_gecis",
+   "sure": 7.524,
+   "fov": 55,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      -40,
+      160,
+      1371.1
+     ],
+     "bak": [
+      0,
+      -320,
+      1188.9
+     ]
+    },
+    {
+     "t": 7.524,
+     "kam": [
+      -40,
+      -150,
+      1369.8
+     ],
+     "bak": [
+      -50,
+      -726,
+      1214.2
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "manastir_giris",
+   "sure": 7.524,
+   "fov": 55,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      -40,
+      -200,
+      1326.2
+     ],
+     "bak": [
+      -50,
+      -726,
+      1214.2
+     ]
+    },
+    {
+     "t": 7.524,
+     "kam": [
+      -45,
+      -430,
+      1268.2
+     ],
+     "bak": [
+      -50,
+      -726,
+      1214.2
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "manastir_vadisi",
+   "sure": 10.032,
+   "fov": 55,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      -45,
+      -470,
+      1241.7
+     ],
+     "bak": [
+      -50,
+      -726,
+      1214.2
+     ]
+    },
+    {
+     "t": 10.032,
+     "kam": [
+      -30,
+      -640,
+      1242.1
+     ],
+     "bak": [
+      -50,
+      -726,
+      1217.2
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "nikolaos",
+   "sure": 10.032,
+   "fov": 34,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      -20,
+      -760,
+      1351.1
+     ],
+     "bak": [
+      -81,
+      -881,
+      1218.4
+     ]
+    },
+    {
+     "t": 10.032,
+     "kam": [
+      -75,
+      -775,
+      1383.4
+     ],
+     "bak": [
+      -81,
+      -881,
+      1216.4
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "vadi_donus",
+   "sure": 10.032,
+   "fov": 62,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      -30,
+      -640,
+      1247.1
+     ],
+     "bak": [
+      -10,
+      -300,
+      1189.5
+     ]
+    },
+    {
+     "t": 10.032,
+     "kam": [
+      -20,
+      -330,
+      1237.9
+     ],
+     "bak": [
+      60,
+      -150,
+      1200.1
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "meydan_yorunge",
+   "sure": 10.032,
+   "fov": 48,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      134.3,
+      -307.9,
+      1288.4
+     ],
+     "bak": [
+      110,
+      -170,
+      1200.5
+     ]
+    },
+    {
+     "t": 3.341,
+     "kam": [
+      62.1,
+      -301.6,
+      1285.7
+     ],
+     "bak": [
+      110,
+      -170,
+      1200.5
+     ]
+    },
+    {
+     "t": 6.691,
+     "kam": [
+      2.8,
+      -260.0,
+      1273.2
+     ],
+     "bak": [
+      110,
+      -170,
+      1200.5
+     ]
+    },
+    {
+     "t": 10.032,
+     "kam": [
+      -27.9,
+      -194.3,
+      1274.2
+     ],
+     "bak": [
+      110,
+      -170,
+      1200.5
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "kanyon_kanat",
+   "sure": 10.032,
+   "fov": 56,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      130,
+      730,
+      1267.0
+     ],
+     "bak": [
+      70,
+      520,
+      1160.6
+     ]
+    },
+    {
+     "t": 5.016,
+     "kam": [
+      95,
+      640,
+      1258.4
+     ],
+     "bak": [
+      60,
+      380,
+      1176.3
+     ]
+    },
+    {
+     "t": 10.032,
+     "kam": [
+      60,
+      540,
+      1266.5
+     ],
+     "bak": [
+      100,
+      -120,
+      1211.7
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "buyuk_yorunge",
+   "sure": 10.032,
+   "fov": 52,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      -388.6,
+      57.9,
+      1503.6
+     ],
+     "bak": [
+      100,
+      -120,
+      1211.7
+     ]
+    },
+    {
+     "t": 3.341,
+     "kam": [
+      -416.5,
+      -59.6,
+      1500.8
+     ],
+     "bak": [
+      100,
+      -120,
+      1211.7
+     ]
+    },
+    {
+     "t": 6.691,
+     "kam": [
+      -416.5,
+      -180.4,
+      1496.4
+     ],
+     "bak": [
+      100,
+      -120,
+      1211.7
+     ]
+    },
+    {
+     "t": 10.032,
+     "kam": [
+      -388.6,
+      -297.9,
+      1496.6
+     ],
+     "bak": [
+      100,
+      -120,
+      1211.7
+     ]
+    }
+   ]
+  },
+  {
+   "ad": "kapanis",
+   "sure": 14.905,
+   "fov": 55,
+   "kareler": [
+    {
+     "t": 0.0,
+     "kam": [
+      40,
+      -330,
+      1302.5
+     ],
+     "bak": [
+      100,
+      -120,
+      1211.7
+     ]
+    },
+    {
+     "t": 14.905,
+     "kam": [
+      -60,
+      -560,
+      1537.0
+     ],
+     "bak": [
+      100,
+      -120,
+      1211.7
+     ]
+    }
+   ]
+  }
+ ],
+ "yazilar": [
+  {
+   "tur": "acilis",
+   "baslik": "Sinasos",
+   "alt": "Mustafapaşa · Ürgüp · Kapadokya",
+   "bas": 1.8,
+   "son": 11.38,
+   "en": {
+    "alt": "Mustafapaşa · Ürgüp · Cappadocia"
+   }
+  },
+  {
+   "baslik": "Aziz Konstantin ve Eleni Kilisesi",
+   "alt": "1729 · onarım 1850 · köy meydanı",
+   "bas": 23.13,
+   "son": 31.26,
+   "en": {
+    "baslik": "Church of Saints Constantine and Helena",
+    "alt": "1729 · restored 1850 · village square"
+   }
+  },
+  {
+   "baslik": "Cami-i Kebir",
+   "alt": "kitabesi 1601 · köşk minaresiyle",
+   "bas": 32.8,
+   "son": 39.07,
+   "en": {
+    "baslik": "Cami-i Kebir (Great Mosque)",
+    "alt": "inscription dated 1601 · with its kiosk minaret"
+   }
+  },
+  {
+   "baslik": "Mehmet Şakir Paşa Medresesi",
+   "alt": "1899 · bugün Kapadokya Üniversitesi",
+   "bas": 40.43,
+   "son": 46.55,
+   "en": {
+    "baslik": "Mehmet Şakir Pasha Madrasa",
+    "alt": "1899 · today Cappadocia University"
+   }
+  },
+  {
+   "baslik": "Sinasos konakları",
+   "alt": "19. yüzyıl Rum taş ustalığı",
+   "bas": 53.36,
+   "son": 61.26,
+   "en": {
+    "baslik": "The mansions of Sinasos",
+    "alt": "19th-century Greek stonemasonry"
+   }
+  },
+  {
+   "baslik": "Kapadokya Üniversitesi",
+   "alt": "Cansever Konağı · 1884'ten önce",
+   "bas": 63.64,
+   "son": 71.42,
+   "en": {
+    "baslik": "Cappadocia University",
+    "alt": "Cansever Mansion · before 1884"
+   }
+  },
+  {
+   "baslik": "Aziz Vasilios Kilisesi",
+   "alt": "Beydere vadisinin yamacına oyulmuş kaya kilisesi",
+   "bas": 90.73,
+   "son": 99.01,
+   "en": {
+    "baslik": "Church of St. Basil",
+    "alt": "rock-cut church carved into the slope of the Beydere valley"
+   }
+  },
+  {
+   "tur": "anlati",
+   "baslik": "Sinasos, 1924'e kadar Rumların ve Türklerin birlikte yaşadığı bir ticaret köyüydü.",
+   "bas": 101.01,
+   "son": 111.55,
+   "en": {
+    "baslik": "Until 1924, Sinasos was a trading village where Greeks and Turks lived side by side."
+   }
+  },
+  {
+   "baslik": "Aziz Stefanos Şapeli",
+   "alt": "kaya oyma · Manastır Vadisi'nin başı",
+   "bas": 148.25,
+   "son": 154.49,
+   "en": {
+    "baslik": "Chapel of St. Stephen",
+    "alt": "rock-cut · head of the Monastery Valley"
+   }
+  },
+  {
+   "baslik": "Aziz Nikolaos Manastırı",
+   "alt": "Sinasos'un koruyucu azizi",
+   "bas": 155.94,
+   "son": 164.21,
+   "en": {
+    "baslik": "Monastery of St. Nicholas",
+    "alt": "the patron saint of Sinasos"
+   }
+  },
+  {
+   "tur": "kapanis",
+   "baslik": "Mustafapaşa",
+   "alt": "Sinasos",
+   "bas": 206.81,
+   "son": 219.77,
+   "kunye": "DJI Matrice 4E ile 20 Ekim 2026'da çekilen 6875 fotoğraftan üretilen 3B model · Müzik: Nomadic Camp, Sascha Ende (ende.app), CC BY 4.0",
+   "en": {
+    "kunye": "3D model built from 6,875 photos taken with a DJI Matrice 4E on 20 October 2026 · Music: Nomadic Camp, Sascha Ende (ende.app), CC BY 4.0"
+   }
+  }
+ ]
+}

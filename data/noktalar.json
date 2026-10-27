@@ -1,0 +1,366 @@
+{
+  "aciklama": "Sinasos gezisi noktalari ve fotograf gorevleri (27 Ekim 2026). Konumlar OpenStreetMap ve Kultur Envanteri koordinatlarindan; her biri modelde tepeden bakilarak kontrol edildi. Metinler kaynaklardan derlendi, kaynaklarin celistigi bilgiler alinmadi ya da 'anlatilir' diye verildi. Turkce metin ana alanlarda, Ingilizcesi her kaydin 'en' alt nesnesinde. Kisaltmalar: Pekak 2009 = M. S. Pekak, Hacettepe Univ. Edebiyat Fak. Dergisi 26/1, s. 163-186; KAM = Kapadokya Universitesi Kapadokya Arastirmalari Merkezi, mustafapasakapadokya.org.",
+  "gorevAciklama": "Fotograf gorevleri: hedefler enlem, boylam ve elipsoid yuksekligi (m; modelde tepeden ve egik pozlarla bulundu). Kosullar gimbal kamerasina gore: mesafe = kameradan ilk hedefe m; kerteriz = hedeften kameraya yon, kuzeyden saat yonunde derece (aralik 360'i asabilir); egim = gimbal acisi, derece, asagi eksi; yerden = kameranin DTM'ye gore yuksekligi; kadraj = hedefin goruntu merkezine en fazla uzakligi (1 = goruntu kenari); tolerans = gorus isini icin m (isin hedefe bu kadar yakin bir yere carparsa hedef gorunur sayilir); gorus: false ise isin denetimi yok; enAzNokta = kadrajda olmasi gereken gezi noktasi sayisi.",
+  "muzikler": {
+    "ilahi": {
+      "dosya": "muzik/ilahi_byzantine_chant_rtb45.mp3",
+      "hacim": 0.4,
+      "kunye": "Byzantine Chant, RTB45 (freesound.org/s/157294), CC BY 4.0. Canlı konser kaydı, New York, büyük olasılıkla Masters of the Psaltic Art korosu (2004).",
+      "en": { "kunye": "Byzantine Chant, RTB45 (freesound.org/s/157294), CC BY 4.0. Live concert recording, New York, most likely the Masters of the Psaltic Art choir (2004)." }
+    },
+    "konak": {
+      "dosya": "muzik/konak_huseyni_saz_semaisi.ogg",
+      "hacim": 0.4,
+      "kunye": "Hüseyni Saz Semaisi, Hafız Kemal Bey (kemençe) ve Hayriye Hanım (ud), 1931 öncesi taş plak. Kamu malı; Wikimedia Commons, kaynak gallica.bnf.fr / BnF.",
+      "en": { "kunye": "Hüseyni Saz Semaisi, Hafız Kemal Bey (kemençe) and Hayriye Hanım (oud), 78 rpm record from before 1931. Public domain; Wikimedia Commons, source gallica.bnf.fr / BnF." }
+    },
+    "ney": {
+      "dosya": "muzik/ney_sousinak_taxim_1928.mp3",
+      "hacim": 0.4,
+      "kunye": "Sousinak Taxim, Isan Asis (ney), Polydor 1928. Kamu malı. Kaynak: gallica.bnf.fr / BnF.",
+      "en": { "kunye": "Sousinak Taxim, Isan Asis (ney), Polydor 1928. Public domain. Source: gallica.bnf.fr / BnF." }
+    },
+    "giris": {
+      "dosya": "muzik/giris_aravisos_1927.mp3",
+      "hacim": 0.4,
+      "kunye": "Chants turcs et grecs d'Asie Mineure (Aravisos/Arapsun), Constantin Yoldjoglou; kayıt Hubert Pernot, Sorbonne 1927. Kamu malı. Kaynak: gallica.bnf.fr / BnF.",
+      "en": { "kunye": "Chants turcs et grecs d'Asie Mineure (Aravisos/Arapsun), Constantin Yoldjoglou; recorded by Hubert Pernot, Sorbonne 1927. Public domain. Source: gallica.bnf.fr / BnF." }
+    }
+  },
+  "giris": {
+    "ad": "Sinasos'a hoş geldin",
+    "alt": "Mustafapaşa, Ürgüp · eski adı Sinasos (Σινασός)",
+    "metin": [
+      "Üzerinde uçtuğun köyün eski adı Sinasos; bu ad 1476 kayıtlarında geçer. 19. yüzyılda köy ticaretle zenginleşti: İstanbul'daki havyar, keten tohumu ve susam yağı ticareti Sinasoslu bir loncanın elindeydi. Bu zenginlik bugün gördüğün taş konaklara, kiliselere ve okullara dönüştü.",
+      "Köyde Rumlar ve Müslüman Türkler birlikte yaşıyordu. 1923 nüfus mübadelesiyle Sinasos Rumları 1924'te köyden ayrılıp Eğriboz adasında Nea Sinasos'u kurdu; yerlerine Kesriye'nin Jerveni köyünden gelen Müslümanlar yerleşti. Ayrılmadan önce, Temmuz 1924'te köy fotoğraflatılıp bir albüm hazırlandı.",
+      "Bugünkü ad, 1804 tarihli çeşmeleri yaptıran Seyyid Mustafa Paşa'dan gelir. Köy 2021'de BM Dünya Turizm Örgütü'nün En İyi Turizm Köyleri listesine girdi. Turkuaz ışıkları izle: her yapının yanında bir ezgi ve bir hikâye seni bekliyor.",
+      "Yapıların çoğunun bir de fotoğraf görevi var. Doğru yerden ve doğru açıyla çek, 1924'teki gibi kendi Sinasos albümünü oluştur."
+    ],
+    "kaynak": "Pekak 2009; KAM; Mustafapaşa Belediyesi; Türkçe Vikipedi (Nişanyan); UNWTO 2021",
+    "en": {
+      "ad": "Welcome to Sinasos",
+      "alt": "Mustafapaşa, Ürgüp · formerly Sinasos (Σινασός)",
+      "metin": [
+        "The village you are flying over was once called Sinasos; the name appears in records from 1476. In the 19th century the village grew rich through trade: in Istanbul, the caviar, linseed and sesame oil trade was in the hands of a guild from Sinasos. That wealth turned into the stone mansions, churches and schools you see today.",
+        "Greeks and Muslim Turks lived side by side in the village. After the 1923 population exchange, the Greeks of Sinasos left in 1924 and founded Nea Sinasos on the island of Euboea; Muslims from the village of Jerveni near Kastoria (Kesriye) settled in their place. Before they left, in July 1924, the village was photographed and an album was compiled.",
+        "Today's name comes from Seyyid Mustafa Pasha, who had the village fountains built in 1804. In 2021 the village was named one of the UN World Tourism Organization's Best Tourism Villages. Follow the turquoise beacons: next to each building a melody and a story are waiting for you.",
+        "Most buildings also have a photo mission. Shoot them from the right spot and at the right angle, and build your own Sinasos album, just like the one made in 1924."
+      ],
+      "kaynak": "Pekak 2009; KAM; Mustafapaşa Municipality; Turkish Wikipedia (Nişanyan); UNWTO 2021"
+    }
+  },
+  "noktalar": [
+    {
+      "id": "konstantin-eleni",
+      "ad": "Aziz Konstantin ve Eleni Kilisesi",
+      "tur": "kilise",
+      "enlem": 38.583471, "boylam": 34.897262,
+      "yaricap": 30,
+      "alt": "1729, onarım 1850 · köy meydanı",
+      "metin": [
+        "Köy meydanındaki bu kilise, mübadeleden önce pazar yeri olan alana yapıldı. Kapının üstündeki sekiz satırlık Rumca kitabeye göre Sultan Ahmed döneminde kısmen yapılmış, 1729'da temelden inşa edilmiş ve 1850'de Abdülmecid döneminde onarılmıştır.",
+        "Sarı ve gri kesme taştan, üç nefli ve üç apsisli bir bazilikadır; batısında avlu ve narteks, içinde kadınlar mahfili vardır. Batı cephesinde pençelerinde kılıç ve asa tutan çift başlı bir kartal, karşılıklı iki ejder ve serafim kabartmaları görülür. 1850 onarımına bağış yapanların adları cephe taşlarına kazınmıştır.",
+        "Halk arasında kilisenin 40 günde yapıldığı anlatılır (başka bir anlatıda 80 gün). 1924 fotoğraflarında görülen çan kulesi bugün yok. Kilise ziyarete açıktır; 1990'lardan beri her mayıs ayında burada sembolik bir ayin yapılır."
+      ],
+      "kaynak": "Pekak 2009 (kitabe metni s. 168); KAM; Mustafapaşa Belediyesi",
+      "en": {
+        "ad": "Church of Saints Constantine and Helena",
+        "alt": "1729, restored 1850 · village square",
+        "metin": [
+          "This church on the village square was built on the site of what was the marketplace before the population exchange. According to the eight-line Greek inscription above the door, it was partly built in the reign of Sultan Ahmed, rebuilt from its foundations in 1729 and restored in 1850 under Abdülmecid.",
+          "It is a three-aisled basilica with three apses, built of yellow and grey cut stone; on its west side are a courtyard and a narthex, and inside there is a women's gallery. The west façade bears reliefs of a double-headed eagle holding a sword and a sceptre in its talons, two facing dragons and seraphim. The names of those who donated to the 1850 restoration are carved into the façade stones.",
+          "Local tradition says the church was built in 40 days (another version says 80). The bell tower seen in the 1924 photographs no longer exists. The church is open to visitors; since the 1990s a symbolic liturgy has been held here every May."
+        ],
+        "kaynak": "Pekak 2009 (inscription text p. 168); KAM; Mustafapaşa Municipality"
+      }
+    },
+    {
+      "id": "sakir-pasa-medresesi",
+      "ad": "Mehmet Şakir Paşa Medresesi",
+      "tur": "medrese",
+      "enlem": 38.583481, "boylam": 34.898378,
+      "yaricap": 25,
+      "etiketYuksekligi": 48,
+      "alt": "1899 (Hicri 1316) · Cami-i Kebir'in karşısında",
+      "metin": [
+        "Kitabesine göre 1899'da Mısırlı Mehmet Şakir Paşa tarafından yaptırıldı. İki katlı yapı, açık bir avlunun çevresinde asimetrik bir plana sahiptir; avlunun kuzey ve doğusunda altı kemerli revaklar uzanır.",
+        "Batıdaki anıtsal taç kapı yapının en dikkat çekici yeridir: kademeli kemerler, Korint başlıklı sütunçeler, bitkisel ve geometrik kabartmalar, kabartmalı çift kanatlı ahşap kapı ve cephede mermer bir tuğra. Plan 16. yüzyıl medreselerini izlerken süslemelerde Barok ve Rokoko etkisi görülür.",
+        "Zaman içinde konak, askeri birlik ve halı satış yeri olarak kullanıldı. Bugün Kapadokya Üniversitesi'nin eğitim binasıdır."
+      ],
+      "kaynak": "KAM (Mehmet Şakir Paşa Medresesi); Kültür Envanteri; Mustafapaşa Belediyesi",
+      "en": {
+        "ad": "Mehmet Şakir Pasha Madrasa",
+        "alt": "1899 (1316 AH) · opposite the Cami-i Kebir",
+        "metin": [
+          "According to its inscription, it was built in 1899 by Mehmet Şakir Pasha of Egypt. The two-storey building has an asymmetrical plan around an open courtyard; arcades of six arches run along the north and east sides of the courtyard.",
+          "The monumental portal on the west is the most striking part of the building: stepped arches, colonnettes with Corinthian capitals, floral and geometric reliefs, a carved double-leaf wooden door and a marble tughra on the façade. The plan follows 16th-century madrasas, while the decoration shows Baroque and Rococo influence.",
+          "Over time it was used as a mansion, a military post and a carpet shop. Today it is a teaching building of Cappadocia University."
+        ],
+        "kaynak": "KAM (Mehmet Şakir Paşa Medresesi); Cultural Inventory (Kültür Envanteri); Mustafapaşa Municipality"
+      }
+    },
+    {
+      "id": "cami-i-kebir",
+      "ad": "Cami-i Kebir",
+      "tur": "cami",
+      "enlem": 38.583561, "boylam": 34.898051,
+      "yaricap": 25,
+      "etiketYuksekligi": 32,
+      "alt": "kitabesi 1601 · köyün ulu camisi",
+      "metin": [
+        "Kitabesi 1601 tarihini verir, ancak kesin yapım tarihi bilinmiyor. Niğde Sancağı Asar-ı Atika Defteri'ne göre yaptıran El-Hac İbrahim'dir. İki nefli harimde mermer bir mihrap ve taş bir minber bulunur.",
+        "En ilgi çekici yanı özgün minaresidir: güneydoğu köşesinde dış merdivenle çıkılan, dört sütun üzerinde duran altıgen külahlı bir köşk minare. Minbere benzediği için \"minber minare\" diye de anılır. İkinci minare 1976'da eklendi.",
+        "Köye bugünkü adını veren Seyyid Mustafa Paşa'nın 1804 tarihli çeşmesi aslen caminin hemen önündeydi. Anlatıya göre köylüler paşadan su istemişti; Mustafapaşa adı 1966'da resmileşti."
+      ],
+      "kaynak": "KAM (Cami-i Kebir; Mustafa Paşa Kimdir); Mustafapaşa Belediyesi",
+      "en": {
+        "ad": "Cami-i Kebir (Great Mosque)",
+        "alt": "inscription dated 1601 · the village's great mosque",
+        "metin": [
+          "Its inscription gives the date 1601, but the exact date of construction is unknown. According to the register of antiquities of the Niğde Sanjak (Asar-ı Atika Defteri), it was built by El-Hac İbrahim. The two-aisled prayer hall has a marble mihrab and a stone minbar.",
+          "Its most interesting feature is the original minaret: a kiosk minaret at the southeast corner, reached by an outside staircase, standing on four columns and topped with a hexagonal conical roof. Because it resembles a minbar, it is also called the \"minbar minaret\". The second minaret was added in 1976.",
+          "The 1804 fountain of Seyyid Mustafa Pasha, who gave the village its present name, originally stood right in front of the mosque. The story goes that the villagers had asked the pasha for water; the name Mustafapaşa became official in 1966."
+        ],
+        "kaynak": "KAM (Cami-i Kebir; Mustafa Paşa Kimdir); Mustafapaşa Municipality"
+      }
+    },
+    {
+      "id": "kapadokya-universitesi",
+      "ad": "Kapadokya Üniversitesi · Cansever Konağı",
+      "tur": "universite",
+      "enlem": 38.584603, "boylam": 34.898380,
+      "yaricap": 35,
+      "alt": "1884'ten önce · üniversitenin konak binalarından",
+      "metin": [
+        "Kapadokya Üniversitesi köyün tarihi yapılarının bir bölümünü eğitim binası olarak kullanıyor; medrese ve bu konak bunlardan.",
+        "Cansever Konağı, içindeki duvar resmine göre 1884'ten önce yapıldı. Mübadeleden önceki sahibi sarraf Hacı Faslaha Vasilis'ti; adını mübadeleden sonra yerleşen Cansever ailesinden alır. İki katlı, çokgen planlı ve orta avlulu konakta dökme demir korkuluklar ve rozetli konsollar var. Köşk odasındaki mitolojik duvar resmi Rumca \"Efesli Apelles'e Göre İftira\" yazısını taşır; Georgios İordanidis imzalı ve 1884 tarihlidir.",
+        "Köyün doğusundaki yeni Oktay Sinanoğlu Binası 2017-2018 akademik yılında açıldı. Adını, evrensel bilim üretimi ile ana dilde eğitimin birlikte yürümesini savunan kimyager Oktay Sinanoğlu'ndan (1935-2015) alır."
+      ],
+      "kaynak": "KAM (Kapadokya Üniversitesi Cansever Konağı); Kapadokya Üniversitesi kampüs sayfası",
+      "en": {
+        "ad": "Cappadocia University · Cansever Mansion",
+        "alt": "before 1884 · one of the university's mansion buildings",
+        "metin": [
+          "Cappadocia University uses some of the village's historic buildings for teaching; the madrasa and this mansion are among them.",
+          "According to a wall painting inside, the Cansever Mansion was built before 1884. Before the population exchange it belonged to the money changer Hacı Faslaha Vasilis; it takes its name from the Cansever family, who settled here after the exchange. The two-storey mansion has a polygonal plan with a central courtyard, cast-iron railings and brackets decorated with rosettes. The mythological wall painting in the kiosk room bears the Greek inscription \"Calumny after Apelles of Ephesus\"; it is signed by Georgios Iordanidis and dated 1884.",
+          "The new Oktay Sinanoğlu Building on the east side of the village opened in the 2017-2018 academic year. It is named after the chemist Oktay Sinanoğlu (1935-2015), who argued that producing universal science and teaching in one's mother tongue should go hand in hand."
+        ],
+        "kaynak": "KAM (Kapadokya Üniversitesi Cansever Konağı); Cappadocia University campus page"
+      }
+    },
+    {
+      "id": "sinasos-konaklari",
+      "ad": "Sinasos Konakları · Eski Rum Evi",
+      "tur": "konak",
+      "enlem": 38.58145, "boylam": 34.89986,
+      "yaricap": 35,
+      "alt": "Temel Öztürk Konağı (Old Greek House), 1876",
+      "metin": [
+        "Mübadeleden önce Sinasos'ta 700 kadar taş konak vardı; bugün ayakta kalanların sayısı kaynağa göre 30 ile 120 arasında veriliyor. Çoğu iki katlı ve kesme taştandır; çıkma balkonlar oymalı taş konsollara oturur. Kapı tokmakları sahibinin dinini ve toplumsal konumunu gösterirdi.",
+        "Konakların duvar resimleri köyün kendi ressamları Kostis Meletiadis ve Georgios İordanidis'in işidir; boyalar İstanbul'dan getirilirdi. Buradaki Temel Öztürk Konağı (Old Greek House) kitabesine göre 1876'da yapıldı; üst katında İordanidis imzalı, \"bahar\" yazılı, 1887 tarihli bir salıncak sahnesi var. 1992'den beri otel ve restorandır.",
+        "Köydeki Serafim Konağı'nın (1853) kapısında şu Rumca kitabe okunur: \"İnsanoğlu; eğer dostsan hoş geldin, düşman ve kötü niyetliysen bu kapıdan uzak dur. Bugün benim, yarın başkasının ve hiçbir zaman hiç kimsenin.\""
+      ],
+      "kaynak": "KAM; Mustafapaşa Belediyesi; GoTürkiye (Kültür ve Turizm Bakanlığı); Kültür Envanteri; Pekak 2009 (Serafim Konağı kitabesi)",
+      "en": {
+        "ad": "Sinasos Mansions · Old Greek House",
+        "alt": "Temel Öztürk Mansion (Old Greek House), 1876",
+        "metin": [
+          "Before the population exchange there were about 700 stone mansions in Sinasos; depending on the source, between 30 and 120 of them still stand today. Most are two storeys high and built of cut stone; their projecting balconies rest on carved stone brackets. The door knockers once showed the owner's religion and social standing.",
+          "The wall paintings in the mansions are the work of the village's own painters, Kostis Meletiadis and Georgios Iordanidis; their paints were brought from Istanbul. According to its inscription, the Temel Öztürk Mansion (Old Greek House) here was built in 1876; on its upper floor there is a swing scene signed by Iordanidis, inscribed \"spring\" and dated 1887. It has been a hotel and restaurant since 1992.",
+          "The door of the Serafim Mansion (1853) in the village carries this Greek inscription: \"Man, if you are a friend, welcome; if you are an enemy with ill intent, keep away from this door. Today it is mine, tomorrow someone else's, and never anyone's.\""
+        ],
+        "kaynak": "KAM; Mustafapaşa Municipality; GoTürkiye (Ministry of Culture and Tourism); Cultural Inventory (Kültür Envanteri); Pekak 2009 (Serafim Mansion inscription)"
+      }
+    },
+    {
+      "id": "aziz-vasilios",
+      "ad": "Aziz Vasilios Kilisesi",
+      "tur": "kilise",
+      "enlem": 38.590461, "boylam": 34.897593,
+      "yaricap": 45,
+      "etiketYuksekligi": 60,
+      "alt": "kaya oyma · Beydere vadisinin doğu yamacı",
+      "metin": [
+        "Köyün kuzeyinde, vadi yamacına birkaç kotta oyulmuş bir kaya kilisesi; yapım tarihi bilinmiyor. Payelerle üç nefe ayrılır: orta nef Aziz Basileios'a, sağdaki Aziz Dimitrios'a, soldaki Aziz Eleftherios'a adanmıştır.",
+        "İçindeki resimlerde köylü ressamların imzaları var: Kostis Meletiadis (1902) ve Georgios İordanidis (1915). Aynı ressamların işleri köyün konaklarında da görülür.",
+        "Kilise 2012'de çökme riski nedeniyle ziyarete kapatıldı; 2018'de bir bölümü kaya parçasıyla birlikte vadiye düştü. Onu en iyi drone ile, dışarıdan görebilirsin."
+      ],
+      "kaynak": "KAM (Aziz Basileios Kilisesi); Pekak 2009",
+      "en": {
+        "ad": "Church of St. Basil (Aziz Vasilios)",
+        "alt": "rock-cut · east slope of the Beydere valley",
+        "metin": [
+          "A rock-cut church north of the village, carved into the valley slope on several levels; its date is unknown. Piers divide it into three naves: the central nave is dedicated to St. Basil, the right one to St. Demetrius and the left one to St. Eleftherios.",
+          "The paintings inside bear the signatures of village painters: Kostis Meletiadis (1902) and Georgios Iordanidis (1915). Works by the same painters can also be seen in the village mansions.",
+          "The church was closed to visitors in 2012 because of the risk of collapse; in 2018 part of it fell into the valley together with a piece of rock. The best way to see it is from the outside, with a drone."
+        ],
+        "kaynak": "KAM (Aziz Basileios Kilisesi); Pekak 2009"
+      }
+    },
+    {
+      "id": "aziz-stefanos",
+      "ad": "Aziz Stefanos Şapeli",
+      "tur": "kilise",
+      "enlem": 38.578492, "boylam": 34.895957,
+      "yaricap": 35,
+      "alt": "kaya oyma şapel · Manastır Vadisi'nin başı",
+      "metin": [
+        "Manastır Vadisi'nin başında, yolun batısında kayaya oyulmuş küçük bir şapel; çoğu zaman yalnızca küçük kapısından fark edilir. Yapım tarihi bilinmiyor.",
+        "İçinde özgün durumunu koruyan, kayadan oyulmuş bir okuma kürsüsü (ambon) ve üzerinde bir kartal kabartması var; kubbedeki kalem işi 1907 tarihlidir. Mustafapaşa kiliseleri arasında liturjik özellikleriyle dikkat çeker.",
+        "Aynı adı taşıyan ve daha çok bilinen Aziz Stefanos Kilisesi komşu Cemil köyündedir; bu şapel ondan ayrıdır."
+      ],
+      "kaynak": "KAM (Stefanos Kilisesi); Pekak 2009",
+      "en": {
+        "ad": "Chapel of St. Stephen (Aziz Stefanos)",
+        "alt": "rock-cut chapel · head of the Monastery Valley",
+        "metin": [
+          "A small chapel carved into the rock west of the road at the head of the Monastery Valley; it is often noticed only by its small door. Its date is unknown.",
+          "Inside there is a rock-cut reading pulpit (ambo) that keeps its original form, with an eagle relief on it; the painted decoration in the dome is dated 1907. It stands out among the churches of Mustafapaşa for its liturgical features.",
+          "The better-known Church of St. Stephen of the same name is in the neighbouring village of Cemil; this chapel is a different building."
+        ],
+        "kaynak": "KAM (Stefanos Kilisesi); Pekak 2009"
+      }
+    },
+    {
+      "id": "aziz-nikolaos",
+      "ad": "Aziz Nikolaos Manastırı",
+      "tur": "manastir",
+      "enlem": 38.577092, "boylam": 34.895605,
+      "yaricap": 45,
+      "alt": "en geç 18. yüzyıl, bugünkü biçimi 19. yüzyıl · Manastır Vadisi",
+      "metin": [
+        "Köyün güneyindeki Manastır Vadisi'nde, kısmen kagir kısmen kayaya oyulmuş üç katlı bir manastır. Ana kilise dahil dört kilise, bir avlu, hasta hücreleri ve mezar odaları vardır. Yapım tarihi bilinmiyor; en geç 18. yüzyıldan beri var, bugünkü biçimi 19. yüzyılın ikinci çeyreğine ait.",
+        "Aziz Nikolaos Sinasos'un koruyucu azizidir. Avludaki şadırvan biçimli çeşmenin suyu şifalı sayılırdı ve bu suyu içmeye hem Rumlar hem Türkler gelirdi.",
+        "Manastırın ikonu Ekim 1924'ün sonunda, mübadeleyle birlikte Yunanistan'a götürüldü. Yapı 2012'de onarılarak yeniden açıldı."
+      ],
+      "kaynak": "KAM (Aziz Nikolaos Manastır Kilisesi); GoTürkiye (Kültür ve Turizm Bakanlığı); Yunanistan Ulusal Araştırma Vakfı (100objects.eie.gr)",
+      "en": {
+        "ad": "Monastery of St. Nicholas (Aziz Nikolaos)",
+        "alt": "18th century at the latest, present form 19th century · Monastery Valley",
+        "metin": [
+          "A three-storey monastery in the Monastery Valley south of the village, partly built of masonry and partly carved into the rock. It has four churches including the main church, a courtyard, cells for the sick and burial chambers. Its date of construction is unknown; it has existed since the 18th century at the latest, and its present form dates from the second quarter of the 19th century.",
+          "St. Nicholas is the patron saint of Sinasos. The water of the fountain in the courtyard, shaped like an ablution fountain, was believed to heal, and both Greeks and Turks came to drink it.",
+          "The monastery's icon was taken to Greece at the end of October 1924, with the population exchange. The building was restored and reopened in 2012."
+        ],
+        "kaynak": "KAM (Aziz Nikolaos Manastır Kilisesi); GoTürkiye (Ministry of Culture and Tourism); National Hellenic Research Foundation (100objects.eie.gr)"
+      }
+    }
+  ],
+  "gorevler": [
+    {
+      "id": "kilise-bati-cephesi",
+      "nokta": "konstantin-eleni",
+      "hedefler": [ { "enlem": 38.5835122, "boylam": 34.8971627, "yukseklik": 1187.2 } ],
+      "mesafe": [ 12, 60 ], "kerteriz": [ 250, 320 ], "egim": [ -40, 10 ], "kadraj": 0.55, "tolerans": 5,
+      "baslik": "Revaklı batı girişi",
+      "gorev": "Kilisenin batı cephesini karşıdan ve alçaktan çek: kemerli giriş ve üstündeki kabartmalar kadrajın ortasında olsun. Ağaçların arasında bir açıklık bul.",
+      "basari": "Batı cephesi albümde. Çift başlı kartal ve ejder kabartmaları bu kemerlerin üstünde.",
+      "en": {
+        "baslik": "The arcaded west entrance",
+        "gorev": "Shoot the church's west façade head-on and from low altitude: keep the arched entrance and the reliefs above it in the centre of the frame. Find a gap between the trees.",
+        "basari": "The west façade is in your album. The double-headed eagle and the dragon reliefs are above these arches."
+      }
+    },
+    {
+      "id": "medrese-tac-kapi",
+      "nokta": "sakir-pasa-medresesi",
+      "hedefler": [ { "enlem": 38.5835347, "boylam": 34.8982586, "yukseklik": 1196.6 } ],
+      "mesafe": [ 10, 60 ], "kerteriz": [ 190, 340 ], "egim": [ -35, 15 ], "kadraj": 0.55, "tolerans": 4,
+      "baslik": "Anıtsal taç kapı",
+      "gorev": "Medresenin batıdaki taç kapısını caddeden çek. Kapı ve önündeki merdiven kadrajın ortasında olsun; cami araya girmesin.",
+      "basari": "Taç kapı albümde: kademeli kemerler ve Korint başlıklı sütunçeler.",
+      "en": {
+        "baslik": "The monumental portal",
+        "gorev": "Photograph the madrasa's west portal from the street. Keep the portal and the steps in front of it in the centre of the frame, without the mosque getting in the way.",
+        "basari": "The portal is in your album: stepped arches and colonnettes with Corinthian capitals."
+      }
+    },
+    {
+      "id": "cami-minare",
+      "nokta": "cami-i-kebir",
+      "hedefler": [
+        { "enlem": 38.5836140, "boylam": 34.8981266, "yukseklik": 1204.3 },
+        { "enlem": 38.5835401, "boylam": 34.8980371, "yukseklik": 1199.4 }
+      ],
+      "mesafe": [ 25, 150 ], "egim": [ -30, 15 ], "kadraj": 0.8, "tolerans": 5,
+      "baslik": "Minare ve cami",
+      "gorev": "Cami-i Kebir'i minaresiyle birlikte yandan çek: minarenin gövdesi ve caminin çatısı aynı karede olsun.",
+      "basari": "Cami-i Kebir albümde. Bu uzun minare 1976'da eklendi; özgün köşk minare caminin güneydoğu köşesinde.",
+      "en": {
+        "baslik": "Minaret and mosque",
+        "gorev": "Photograph the Cami-i Kebir from the side together with its minaret: the minaret shaft and the mosque roof should be in the same shot.",
+        "basari": "The Cami-i Kebir is in your album. This tall minaret was added in 1976; the original kiosk minaret is at the mosque's southeast corner."
+      }
+    },
+    {
+      "id": "cansever-avlu",
+      "nokta": "kapadokya-universitesi",
+      "hedefler": [ { "enlem": 38.5847146, "boylam": 34.8983435, "yukseklik": 1192.5 } ],
+      "mesafe": [ 15, 90 ], "egim": [ -90, -70 ], "kadraj": 0.45, "tolerans": 6,
+      "baslik": "Çokgen konağın avlusu",
+      "gorev": "Cansever Konağı'nın orta avlusunu tam tepeden çek. Gimbali iyice aşağı indir (F) ve avluyu kadrajın ortasına al.",
+      "basari": "Avlu albümde. Konağın çokgen planı ancak yukarıdan böyle okunabiliyor.",
+      "en": {
+        "baslik": "The courtyard of the polygonal mansion",
+        "gorev": "Shoot the central courtyard of the Cansever Mansion from directly above. Tilt the gimbal well down (F) and put the courtyard in the centre of the frame.",
+        "basari": "The courtyard is in your album. The mansion's polygonal plan can only be read like this, from above."
+      }
+    },
+    {
+      "id": "konak-cumba",
+      "nokta": "sinasos-konaklari",
+      "hedefler": [ { "enlem": 38.5814640, "boylam": 34.8998087, "yukseklik": 1205.3 } ],
+      "mesafe": [ 12, 70 ], "kerteriz": [ 280, 350 ], "egim": [ -35, 10 ], "yerden": [ 0, 30 ], "kadraj": 0.55, "tolerans": 5,
+      "baslik": "Cumbalı cephe",
+      "gorev": "Eski Rum Evi'nin cumbalı cephesini kuzeybatıdaki sokaktan, pencere hizasına yakın bir yükseklikten çek.",
+      "basari": "Konak albümde. Çıkma balkonlar oymalı taş konsollara oturuyor.",
+      "en": {
+        "baslik": "The bay-windowed façade",
+        "gorev": "Photograph the bay-windowed façade of the Old Greek House from the street to the northwest, from close to window level.",
+        "basari": "The mansion is in your album. Its projecting balconies rest on carved stone brackets."
+      }
+    },
+    {
+      "id": "vasilios-kanyon",
+      "nokta": "aziz-vasilios",
+      "hedefler": [ { "enlem": 38.5904501, "boylam": 34.8976482, "yukseklik": 1172.2 } ],
+      "mesafe": [ 50, 260 ], "kerteriz": [ 185, 240 ], "egim": [ -35, 10 ], "yerden": [ 0, 60 ], "kadraj": 0.55, "tolerans": 8,
+      "baslik": "Kanyondan Aziz Vasilios",
+      "gorev": "Beydere kanyonuna alçal ve kiliseyi güneybatıdan, kanyonun içinden çek: kilisenin oyulduğu kaya duvarı kadrajın ortasında olsun.",
+      "basari": "Aziz Vasilios albümde. Kilise bu kaya duvarının içine birkaç kat halinde oyulmuş.",
+      "en": {
+        "baslik": "St. Basil from the canyon",
+        "gorev": "Descend into the Beydere canyon and photograph the church from the southwest, from inside the canyon: keep the rock wall it is carved into in the centre of the frame.",
+        "basari": "St. Basil is in your album. The church is carved into this rock wall on several levels."
+      }
+    },
+    {
+      "id": "nikolaos-avlu",
+      "nokta": "aziz-nikolaos",
+      "hedefler": [ { "enlem": 38.5770444, "boylam": 34.8954497, "yukseklik": 1228.8 } ],
+      "mesafe": [ 15, 110 ], "egim": [ -90, -45 ], "kadraj": 0.5, "tolerans": 6,
+      "baslik": "Manastırın avlusu",
+      "gorev": "Aziz Nikolaos Manastırı'nın avlusunu yukarıdan çek: avlu kadrajın ortasında, gimbal en az 45° aşağıda olsun.",
+      "basari": "Manastır avlusu albümde. Rumların ve Türklerin içmeye geldiği şifalı su bu avludaydı.",
+      "en": {
+        "baslik": "The monastery courtyard",
+        "gorev": "Photograph the courtyard of the Monastery of St. Nicholas from above: keep the courtyard in the centre of the frame, with the gimbal at least 45° down.",
+        "basari": "The monastery courtyard is in your album. The healing water that both Greeks and Turks came to drink was here."
+      }
+    },
+    {
+      "id": "koy-panorama",
+      "nokta": null,
+      "hedefler": [ { "enlem": 38.5830465, "boylam": 34.8981415, "yukseklik": 1196.1 } ],
+      "mesafe": [ 300, 1400 ], "yerden": [ 100, 200 ], "kadraj": 0.9, "gorus": false, "enAzNokta": 5,
+      "baslik": "Sinasos'un tamamı",
+      "gorev": "Yüksel ve köyü uzaktan, tek karede çek: en az 100 m yükseklikten, gezi noktalarından en az beşi kadrajda olsun.",
+      "basari": "Köyün panoraması albümde. Mübadeleden önce Sinasos'ta 700 kadar taş konak vardı.",
+      "en": {
+        "baslik": "All of Sinasos",
+        "gorev": "Climb and photograph the whole village from afar in a single frame: from at least 100 m up, with at least five of the sights in the frame.",
+        "basari": "The village panorama is in your album. Before the population exchange there were about 700 stone mansions in Sinasos."
+      }
+    }
+  ]
+}

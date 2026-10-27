@@ -1,0 +1,51 @@
+Gezi muzikleri: kunye ve lisanslar (27 Ekim 2026)
+
+Oyun bu kayitlari Sinasos gezisi noktalarinda dongude calar. Kunyeler oyundaki bilgi
+kartinin altinda da gorunur (data/noktalar.json, "muzikler").
+
+0. nomadic_camp_sascha_ende.mp3   (sinematik tur ve tur videosu)
+   "Nomadic Camp", Sascha Ende, https://ende.app/en/song/13873-nomadic-camp
+   Lisans: CC BY 4.0. Atif: "Nomadic Camp by Sascha Ende, ende.app, License: CC BY 4.0"
+   (sitenin onerdigi metin). Sitenin standart lisansina gore parca Content ID'ye kaydedilemez.
+   3:40, ud/lavta, gitar, ney, def, darbuka. Kullanici sectI (27 Ekim). Site, Sascha Ende'nin
+   bir yapay zeka asistaniyla calistigini yaziyor; parca yapay zeka destekli olabilir.
+   Dosya: sayfadaki oynaticinin kullandigi 128 kbps MP3 (ende.app/storage/mp3low/...).
+   Yuksek kaliteli surum sayfadaki "Download for free" dugmesiyle (ziyaretci dogrulamali) alinir;
+   alinirsa ayni adla buraya konup video yeniden birlestirilebilir (video/OKUBENI.txt).
+   Tur videosundaki muzik analizi: ~95,7 BPM, olcu 2,508 sn, ilk olcu basi 1,947 sn
+   (araclar/tur_uret.py, MUZIK ve KURGU).
+
+1. ilahi_byzantine_chant_rtb45.mp3   (kiliseler ve manastir)
+   "Byzantine Chant", RTB45, https://freesound.org/s/157294/
+   Lisans: CC BY 4.0. Atif: "Byzantine Chant by RTB45, freesound.org/s/157294, CC BY 4.0"
+   7:41, Freesound'un yuksek kaliteli mp3 onizlemesi (ozgun dosya 77,5 MB WAV).
+   Canli konser kaydi (New York, 2004; buyuk olasilikla Masters of the Psaltic Art
+   korosu). Seyirci kaydi oldugu icin icracilarin izni ayrica alinmamis: gri alan.
+   Lisans acisindan temiz alternatif: freesound.org/s/497528 (CC0, Rum Ortodoks ayini).
+
+2. konak_huseyni_saz_semaisi.ogg   (konaklar ve universite)
+   "Husseyni Saz Semayissi", Hafiz Kemal Bey (kemence) ve Hayriye Hanim (ud), 1931 oncesi tas plak.
+   https://commons.wikimedia.org/wiki/File:Husseyni_Saz_Semayissi_.ogg
+   Lisans: kamu mali (PD-old-70, Public Domain Mark). Kaynagi Gallica / BnF. 3:09.
+
+3. ney_sousinak_taxim_1928.mp3   (medrese ve cami)  HENUZ YOK, elle indirilecek
+   "Sousinak Taxim", Isan Asis (ney), Polydor V43449, 1928.
+   https://gallica.bnf.fr/ark:/12148/bpt6k1310458r  (plagin iki yuzu var; obur yuz
+   "Hedjas Taxim", kanun. Ney yuzunu dinleyerek sec.)
+   Lisans: kamu mali (Public Domain Mark). Gallica kosulu: ticari olmayan kullanim serbest,
+   "Source gallica.bnf.fr / BnF" ibaresi zorunlu. 3:33.
+
+4. giris_aravisos_1927.mp3   (karsilama karti)  HENUZ YOK, elle indirilecek
+   "Chants turcs et grecs d'Asie Mineure (Aravisos)", Constantin Yoldjoglou;
+   kayit Hubert Pernot, Sorbonne 1927. Aravisos = Arapsun, bugunku Gulsehir.
+   https://gallica.bnf.fr/ark:/12148/bpt6k129221t
+   Lisans: kamu mali (Public Domain Mark), Gallica kosullari ayni. 3:07.
+
+Gallica dosyalari neden elle: Gallica, Cloudflare robot dogrulamasinin arkasinda; Claude
+bu dogrulamayi asamaz. Tarayicida sayfayi ac, kaydi dinle, indir ve yukaridaki adla bu
+klasore kaydet. Dosya yokken oyun kendi urettigi ezgiyi calar (karsilamada sessiz kalir);
+dosya konunca sayfa yenilenince kendiliginden devreye girer. Dosya mp3 degilse
+data/noktalar.json'daki "dosya" satirindaki uzantiyi duzelt (mp3, ogg, m4a, wav olur).
+
+Ses duzeyi: her kaydin "hacim" degeri 0,4 (ilk ikisi olculdu: tam olcekte RMS ~0,11,
+oyunda ~0,03). Tas plaklar daha kisik ya da daha hisirtili cikarsa "hacim"i degistir.

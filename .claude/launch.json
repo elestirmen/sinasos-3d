@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "oyun",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-c", "import runpy, sys, webbrowser; webbrowser.open = lambda *a, **k: True; sys.argv = ['sunucu.py', '8000']; runpy.run_path('sunucu.py', run_name='__main__')"],
+      "port": 8000,
+      "url": "http://localhost:8000"
+    },
+    {
+      "name": "kayit-alici",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["araclar/kayit_alici.py", "8765"],
+      "port": 8765,
+      "autoPort": false
+    }
+  ]
+}
