@@ -85,7 +85,9 @@ localStorage kökene bağlı (http://127.0.0.1:8000); taşınmadan önceki ziyar
   `sunucu.py --model KLASÖR` ya da proje klasöründe `model_yolu.txt` (ilk satır klasör) varsa `/terra_b3dms/` istekleri oradan karşılanır
   (`translate_path`); sahte klasörle denendi (tileset ve alt klasör oradan, oyun dosyaları yerinden, `..` kaçışı 404).
 - Kullanıcının bilgisayarı: RTX 5060 Ti 16 GB, 64 GB RAM, 24 çekirdek, 4K monitör (%175 ölçek, 59 Hz). Model C: sürücüsünde (taşınmadan önce E:, USB harici HDD).
-- Git (27 Ekim): depo kökü bu klasör. Depoya girmeyenler `.gitignore`da: terra_b3dms/, model_yolu.txt, video/*.mp4, video/ham/, __pycache__.
+- Git (27 Ekim): depo kökü bu klasör, uzak depo `origin` = https://github.com/elestirmen/sinasos-3d (özel; kullanıcı açtı, GitHub Apache 2.0
+  `LICENSE` ile "Initial commit" ekledi, yerel commit'ler onun üzerine alındı). Claude'un `git push`u otomatik izin denetiminde reddedildi;
+  ilk gönderimi kullanıcı yapacak. Depoya girmeyenler `.gitignore`da: terra_b3dms/, model_yolu.txt, video/*.mp4, video/ham/, __pycache__.
   Commit mesajlarının sonuna `Co-Authored-By: Claude ...` satırı eklenir. Byzantine Chant kaydında icracı izni gri alan (muzik/KUNYE.txt):
   depo herkese açılacaksa önce kullanıcıya sor.
 
