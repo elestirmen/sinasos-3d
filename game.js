@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { TilesRenderer, Scheduler } from '3d-tiles-renderer';
-import { GLTFExtensionsPlugin, ReorientationPlugin } from '3d-tiles-renderer/plugins';
+import { GLTFExtensionsPlugin, ReorientationPlugin, TilesFadePlugin } from '3d-tiles-renderer/plugins';
 import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh';
 
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
@@ -25,11 +25,14 @@ const AYAR = {
 	},
 	// hata: 3d-tiles-renderer errorTarget (çizim pikseli, piksel oranı dahil), bellek: karo önbelleği üst sınırı (GB),
 	// piksel: en yüksek piksel oranı (ekranın kendi oranı bunun altındaysa o kullanılır)
+	// Maksimum: orta ve uzak mesafede bir seviye daha ince karo (4K'da uzak görünümde ölçülen keskinlik +28-36 %),
+	// karşılığı 1,8 kat karo ve üçgen, daha uzun ilk yükleme. Yakın planda Ultra ile aynı: orada sınır modelin kendisi.
 	kalite: {
 		dusuk: { hata: 6, bellek: 1, piksel: 1.5 },
 		orta: { hata: 3, bellek: 2, piksel: 1.5 },
 		yuksek: { hata: 2, bellek: 3, piksel: 1.5 },
 		ultra: { hata: 1, bellek: 6, piksel: 2 },
+		maksimum: { hata: 0.6, bellek: 10, piksel: 2 },
 	},
 	bataryaSure: 20 * 60,             // saniye, normal modda düz uçuş
 	halkaYaricap: 6,
@@ -138,7 +141,8 @@ const METIN = {
 		hDugmeler: 'Fotoğraf · kamera · parkur', hModGimbal: 'Uçuş modu · gimbal', hOmuz: 'LB / RB · yön tuşları',
 		hGeziListe: 'Sinasos gezisi', hZiyaretSifirla: 'ziyaretleri sıfırla', hAlbumBaslik: 'Sinasos albümü · fotoğraf görevleri', hAlbumSifirla: 'albümü sıfırla',
 		hKalite: 'Görüntü kalitesi', hDusuk: 'Düşük (hızlı, en çok 1 GB)', hOrta: 'Orta (en çok 2 GB)', hYuksek: 'Yüksek (en çok 3 GB, güçlü ekran kartı)',
-		hUltra: 'Ultra (en çok 6 GB, 12 GB ve üstü ekran kartı)', hSesAyar: 'Ses', hPervaneAyar: 'Pervane sesi', hMuzikAyar: 'Gezi müziği',
+		hUltra: 'Ultra (en çok 6 GB, 12 GB ve üstü ekran kartı)', hMaksimum: 'Maksimum (uzakta daha ince ayrıntı; en çok 10 GB, 16 GB ekran kartı, ilk yükleme uzun)',
+		hSesAyar: 'Ses', hPervaneAyar: 'Pervane sesi', hMuzikAyar: 'Gezi müziği',
 		hTurDugme: 'Sinematik tur', hBasla: 'Uçuşa başla',
 	},
 	en: {
@@ -192,7 +196,8 @@ const METIN = {
 		hDugmeler: 'Photo · camera · race', hModGimbal: 'Flight mode · gimbal', hOmuz: 'LB / RB · D-pad',
 		hGeziListe: 'Sinasos sights', hZiyaretSifirla: 'reset visits', hAlbumBaslik: 'Sinasos album · photo missions', hAlbumSifirla: 'reset album',
 		hKalite: 'Graphics quality', hDusuk: 'Low (fast, up to 1 GB)', hOrta: 'Medium (up to 2 GB)', hYuksek: 'High (up to 3 GB, strong graphics card)',
-		hUltra: 'Ultra (up to 6 GB, graphics card with 12 GB or more)', hSesAyar: 'Sound', hPervaneAyar: 'Propeller sound', hMuzikAyar: 'Sightseeing music',
+		hUltra: 'Ultra (up to 6 GB, graphics card with 12 GB or more)', hMaksimum: 'Maximum (finer detail at a distance; up to 10 GB, 16 GB graphics card, slow first load)',
+		hSesAyar: 'Sound', hPervaneAyar: 'Propeller sound', hMuzikAyar: 'Sightseeing music',
 		hTurDugme: 'Cinematic tour', hBasla: 'Start flying',
 	},
 };
@@ -312,13 +317,21 @@ sahne.add( gunesIsik, gunesIsik.target );
 
 // ---------------------------------------------------------------- 3D Tiles
 const draco = new DRACOLoader().setDecoderPath( './lib/three/examples/jsm/libs/draco/gltf/' );
-let tiles = null, arazi = null;
+let tiles = null, arazi = null, solma = null;
 const cerceve = { hazir: false, O: new THREE.Vector3(), E: new THREE.Vector3( 1, 0, 0 ), N: new THREE.Vector3( 0, 0, - 1 ), ters: new THREE.Matrix4() };
+
+// Yeni karo gelince eskisi birden değil 250 ms'de yer değiştirir (uçarken "pop" olmasın). Fotoğraf ve video karesinde
+// yarım kalmış geçiş (noktalı karışım) olmasın diye çekimden önce bütün geçişler tamamlanır.
+function solmaBitir() {
+	if ( solma && solma.fadingTiles > 0 ) solma._fadeManager.completeAllFades();
+}
 
 function tilesKur( meta ) {
 
 	tiles = new TilesRenderer( AYAR.tileset );
 	tiles.registerPlugin( new GLTFExtensionsPlugin( { dracoLoader: draco } ) );
+	solma = new TilesFadePlugin( { fadeDuration: 250 } );
+	tiles.registerPlugin( solma );
 	tiles.registerPlugin( new ReorientationPlugin( {
 		lat: meta.originLat * DERECE, lon: meta.originLon * DERECE, height: meta.originHeight, recenter: true,
 	} ) );
@@ -1572,6 +1585,7 @@ const tur = {
 					if ( sure >= beklemeMs ) this.kayitDurum.uzunBekleme ++;
 					this.kayitDurum.enUzunMs = Math.max( this.kayitDurum.enUzunMs, Math.round( sure ) );
 					if ( j === 0 ) b1 = performance.now();
+					solmaBitir();
 					renderer.render( sahne, this.kam );
 					// alt karelerin ortalaması adım adım birikir (1, 1/2, 1/3 ...); renk düzenlemesi yalnız görüntüye
 					x.globalAlpha = 1 / ( j + 1 ); x.filter = this.veri.renk || 'none';
@@ -1987,6 +2001,7 @@ function fotoCek() {
 	// fotoğrafta drone, gezi etiketleri ve görev işareti görünmez
 	const gorunur = [ drone, golge, gezi.grup, gorev.isaret ].filter( o => o?.visible );
 	for ( const o of gorunur ) o.visible = false;
+	solmaBitir();
 	renderer.render( sahne, fpvKam );
 	for ( const o of gorunur ) o.visible = true;
 	const gorevMesaji = gorev.fotograf();
@@ -2150,7 +2165,7 @@ function dongu() {
 } )();
 
 // test ve hata ayıklama için
-window.oyun = { durum, parkur, gezi, gorev, muzik, ses, tur, cerceve, get tiles() { return tiles; }, get arazi() { return arazi; }, dunya, enu, isin, THREE, renderer, draco, fpvKam, sahne,
+window.oyun = { durum, parkur, gezi, gorev, muzik, ses, tur, cerceve, get tiles() { return tiles; }, get arazi() { return arazi; }, get solma() { return solma; }, solmaBitir, dunya, enu, isin, THREE, renderer, draco, fpvKam, sahne,
 	// döngüyü elle ilerletir (tarayıcı sekmesi arka plandayken denemek için)
 	adim( n = 1 ) { for ( let i = 0; i < n; i ++ ) dongu(); },
 	isinla( e, n, yerden = 20 ) { dunya( e, n, arazi.yukseklik( e, n ) + yerden, durum.pos ); durum.yerde = false; durum.vel.set( 0, 0, 0 ); durum.kamYerlesti = false; },

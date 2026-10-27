@@ -123,9 +123,11 @@ Turda modelin dışı pus rengindedir. Fotogrametri modelindeki küçük delikle
 
 `game.js` başındaki `AYAR` nesnesi: hız modları, batarya süresi, tavan yüksekliği, halka sayısı, parkur tohumu.
 `AYAR.kalite`: her kalite düzeyi için karo ayrıntısı (`hata`, 3d-tiles-renderer errorTarget, çizim pikseli), karo önbelleği sınırı (`bellek`, GB) ve en yüksek piksel oranı (`piksel`).
-Ultra, 12 GB ve üstü ekran kartları içindir (4K ekranda tam çözünürlük, en çok 6 GB önbellek). Seçilen kalite bir sonraki açılışta hatırlanır.
+Ultra, 12 GB ve üstü ekran kartları içindir (4K ekranda tam çözünürlük, en çok 6 GB önbellek). Maksimum, orta ve uzak mesafede bir seviye daha ince karo getirir (uzak görünümde ölçülen keskinlik yüzde 28-36 daha yüksek); karşılığı 1,8 kat karo, en çok 10 GB önbellek ve daha uzun ilk yükleme; 16 GB ekran kartı içindir. Yakın planda Ultra ile aynıdır, orada sınır modelin kendisidir. Seçilen kalite bir sonraki açılışta hatırlanır.
+Karo geçişleri her ayarda 250 ms'lik solmayla yapılır (yeni karo birden "oturmaz"); fotoğraf ve video karesi alınırken geçişler önce tamamlanır.
 Önbellek dolarsa sol üst panelde kırmızı "dolu, N karo bekliyor" uyarısı çıkar; o zaman kaliteyi bir düzey düşür.
 Adres çubuğuna `?tileset=...` eklenerek farklı bir tileset denenebilir.
+Ayarları ölçmek için `araclar/olcum.js` (konsoldan `const O = await import('./araclar/olcum.js')`; dosyanın başındaki açıklama). 27 Ekim 2026 ölçümleri ve önce/sonra kırpmaları `karsilastirma_20261027/` klasöründe.
 
 ## Lisanslar ve künyeler
 

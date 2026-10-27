@@ -22,8 +22,8 @@ sinasos-3d/
 ├── BASLAT.bat     Windows başlatıcı: python sunucu.py 8000
 ├── data/          arazi.bin, arazi.json, harita.png (DEM'den üretildi); noktalar.json (gezi + görevler, TR/EN);
 │                  tur.json (sinematik tur); gorev_pozlari.json (görev deneme pozları)
-├── araclar/       arazi_uret.py (data/ üretir), tur_uret.py (tur.json), kayit_alici.py (video kaydı)
-├── muzik/, video/ (videolar ve video/ham depoda yok), karsilastirma_20261026/
+├── araclar/       arazi_uret.py (data/ üretir), tur_uret.py (tur.json), kayit_alici.py (video kaydı), olcum.js (grafik ölçümü, konsoldan)
+├── muzik/, video/ (videolar ve video/ham depoda yok), karsilastirma_20261026/ (LOD düzeltmesi), karsilastirma_20261027/ (Maksimum ayarı)
 ├── lib/           three 0.186.1, 3d-tiles-renderer 0.5.3, three-mesh-bvh 0.9.16, Draco çözücü (npm yok, dosyalar kopyalandı)
 └── terra_b3dms/   modelin kopyası (4,58 GB, 18.900 dosya; .gitignore). Aslı Terra projesinde (models/pc/0/terra_b3dms), ona DOKUNMA.
 ```
@@ -118,7 +118,28 @@ Sunucu (sunucu.py) yavaşlığı, aynı gün düzeltildi: `localhost` üzerinden
 
 Kuyruk ayarları denendi, eklenmedi: sunucu düzeltildikten sonra Ultra uçuşunda çözme kuyruğunda 320 karo birikiyor, ama `parseQueue.maxJobs` 16 ve Draco işçisi 8 yapılınca uçuş boyunca ortalama yüklü oran değişmedi (0,744 ve 0,743, her deneme sayfa yenilenerek).
 
-Kalan fikirler: LOD geçişleri için `TilesFadePlugin`; bellek dolarsa errorTarget'ı kendiliğinden artıran bir koruma.
+## Grafik ölçümü ve Maksimum ayarı (27 Ekim 2026)
+
+Kullanıcı "kaynak yeterli, grafik daha iyi olsun, uzakta daha çok ayrıntı" dedi. Ölçüm aracı `araclar/olcum.js` (konsoldan `import`;
+4 sabit poz yakin/orta/uzak/kuzey; yükleme süresi, GPU süresi EXT_disjoint_timer_query ile, render ve tiles.update CPU süresi, görünür karo
+ve seviye sayıları, tam çözünürlük PNG; panel gizliyken `oyun.adim()` ve MessageChannel zamanlayıcıyla çalışır). 4K %175 taklidi: 2194x1150
+CSS, piksel oranı 1,75 → 3839x2012. Görüntüler `video/ham/olcum/` (369 MB, depoda yok), kırpmalar ve özet `karsilastirma_20261027/`.
+Keskinlik ölçütü: gri tonda Laplace varyansı ve ortalama gradyan (etiketsiz 640x360 bölgeler).
+- Yakın plan: hiçbir ayar fark yaratmıyor, sınır modelin çözünürlüğü (L21 zaten yüklü).
+- İnce LOD: errorTarget 0,7 → uzakta gradyan +16-22 %, karo 1,5x; 0,6 → +28-36 %, karo 1,8x (uzak 1248, kuzey 1206), CPU render+update ~20 ms,
+  GPU 17-27 ms, ilk yükleme ~19 s, 6 GB; 0,5 → +30-42 %, karo 2x, CPU ~24 ms, yükleme 55-84 s, 7,5 GB.
+  Seçilen: `AYAR.kalite.maksimum = { hata: 0.6, bellek: 10, piksel: 2 }` (seçenek listesinde Ultra'nın altında).
+- Süper örnekleme (oran 1,75 x 1,5 = 2,625, 5759x3018): GPU 1,5x, durağan keskinlik artmıyor (tarayıcı küçültmesi yumuşatıyor), yalnız
+  kenar titreşimi azalır; ince LOD ile birlikte (0,7 + 1,5x) GPU 36 ms, yükleme 90 s. Eklenmedi.
+- Sis 1800/5000: uzak biraz netleşiyor ama model sınırındaki bej zemin belirginleşiyor; 900/3400 kaldı.
+- `TilesFadePlugin` (250 ms) bütün ayarlarda açık (`solma`): ölçülebilir GPU yükü yok, ışın testleri etkilenmiyor (yerden yükseklik sabit).
+  `solmaBitir()` fotoğraf (`fotoCek`), video karesi (`kaydet`) ve ölçüm yakalamadan önce geçişleri tamamlar
+  (`solma._fadeManager.completeAllFades()`, kütüphanenin iç API'si; lib 0.5.3 sabit). Doğrulama: solan karo 12 → 0, tek kare kaydet hatasız.
+- Ölçüm gizli panelde yapıldı (setTimeout ~80 ms'ye kısılıyor, GPU paylaşımlı): mutlak süreler kullanıcının tarayıcısında farklı olabilir,
+  oranlar geçerli. Kullanıcı Maksimum'u kendi tarayıcısında henüz denemedi.
+
+Kalan fikirler: `BatchedTilesPlugin` ile çizim çağrısı sayısını düşürmek (CPU render 10-14 ms, 1800-2800 çağrı; BVH/ışın uyumu denenmeli);
+bellek dolarsa errorTarget'ı kendiliğinden artıran bir koruma.
 
 ## Test edilenler (bulutta, modelin bir kısmıyla, SwiftShader ile)
 

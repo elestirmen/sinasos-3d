@@ -1,0 +1,36 @@
+Grafik ayarlari olcumu ve "Maksimum" ayari (27 Ekim 2026)
+
+Soru: Ultra'nin ustunde daha iyi bir ayar yapilabilir mi, uzakta daha cok ayrinti olur mu?
+Olcum: araclar/olcum.js (tarayici konsolundan). 4K %175 ekran taklidi (2194x1150 CSS,
+piksel orani 1,75, cizim 3839x2012). Dort sabit poz: yakin (kilise cephesi 27 m),
+orta (bati yamacindan meydana ~250 m), uzak (guneybatidan koy ~650 m), kuzey (guneyden
+butun koy, 1,3 km). Her pozda karolar tamamen yuklenene kadar beklendi; GPU suresi
+EXT_disjoint_timer_query ile, CPU suresi render ve tiles.update icin ayri olculdu.
+Keskinlik: gri tonda Laplace varyansi ve ortalama gradyan, etiketsiz 640x360 bolgelerde.
+
+Sonuc (Ultra = errorTarget 1, oran 1,75):
+- Yakin planda hicbir ayar fark yaratmiyor; sinir modelin kendi cozunurlugu.
+- Daha ince karo secimi (errorTarget) uzakta gercek ayrinti getiriyor:
+    0,7: gradyan +16-22 %, karo sayisi 1,5x, ilk yukleme ~20 s
+    0,6: gradyan +28-36 %, karo 1,8x, CPU ~20 ms/kare, GPU 17-27 ms, yukleme ~19 s, 6 GB
+    0,5: gradyan +30-42 %, karo 2x, CPU ~24 ms/kare, yukleme 55-84 s, 7,5 GB
+  Secilen: Maksimum = errorTarget 0,6, onbellek 10 GB.
+- Super ornekleme (1,5x, 5759x3018): GPU 1,5 kat, duragan goruntude keskinlik artmiyor
+  (tarayici kucultmesi yumusatiyor), yalniz kenar titresimi azalir. Ince karo ile
+  birlikte GPU 36 ms, yukleme 90 s: eklenmedi.
+- Sis 1800/5000: uzak biraz netlesiyor ama model sinirindaki bej zemin belirginlesiyor;
+  degistirilmedi.
+- Karo gecis solmasi (TilesFadePlugin, 250 ms): olculebilir ek yuk yok, carpisma
+  isinlari etkilenmiyor; butun ayarlarda acildi. Fotograf ve video karesinden once
+  gecisler tamamlanir (noktali karisim kalmaz).
+
+Dosyalar (hepsi 1:1 piksel kirpma, 3839x2012 cerceveden):
+  uzak_koy_lod.jpg      uzak poz, koy merkezi: ultra / 0,7 / 0,6 / 0,5
+  uzak_yamac_lod.jpg    uzak poz, sag yamac: ultra / 0,7 / 0,6 / 0,5
+  kuzey_lod.jpg         kuzey poz, koy: ultra / 0,7 / 0,6 / 0,5
+  uzak_super_ornekleme.jpg  uzak poz: ultra / 0,5 / super ornekleme (1,5x, ekrana kucultulmus)
+  sis_ufuk_kuzey.jpg    ufuk seridi: sis 900/3400 (ustte) ve 1800/5000 (altta)
+Tam kareler video/ham/olcum/ altinda (369 MB, depoda yok).
+
+Not: olcum Claude'un gizli tarayici panelinde yapildi; mutlak sureler kullanicinin
+tarayicisinda farkli olabilir, oranlar gecerlidir.
