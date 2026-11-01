@@ -45,6 +45,19 @@ büyük harf) 404 ya da index.html'e çıkıyor; oyun 8090'dan açıldı, 250 is
 splat yüklendi. Funnel'ı kullanıcı kendisi açıyor (ilk seferde yönetim panelinde izin). Sunucu localhost'u dinlemeye devam ediyor;
 Funnel isteği oraya iletiyor. Yayın açıkken localStorage kökeni https://<makine>.<tailnet>.ts.net olur.
 
+Açılış yüklemesi (1 Kasım 2026, kullanıcı: "internete açınca görüntüler tam yüklenmeden açılıyor, çok kötü görünüyor"): yardım ekranı yükleme
+ekranı. `acilis` nesnesi (game.js) `PerformanceObserver` ile `/terra_b3dms/` baytlarını sayar, `data/acilis.json`'daki kalite başına açılış
+boyutuna (1920x1080'de ölçüldü; başka çözünürlükte piksel oranı ^ 0,43) oranlar; `#basla` düğmesi çubuk olur (`.yukleniyor`, `#baslaDolgu`),
+`#yuklemeBilgi` MB, MB/sn ve kalan süre yazar; çubuk geri gitmez, %99'da durur. Hazır: panel döngüsünde (10 Hz) art arda 5 kez queued +
+downloading + parsing = 0 ve loadProgress >= 1. `loadProgress` kaba→ince geçişte geri düşüyor (denemede 0,85 → 0,73), çubukta kullanılmaz.
+"beklemeden başla", H ve Esc beklemeden geçer; Enter ve kumanda Start yalnız hazırken. Yükleme ekranında kalite değişirse yeniden bekler
+(`kaliteDegisti`), oyun başladıktan sonra (`oynandi`) değil. `.ayarlar` satırı yardım kutusunda sticky (bottom: -26px, opak zemin).
+Ölçümler (1080p): Düşük 42,3, Orta 77,5, Yüksek 109,9, Ultra 203,3, Maksimum 314,4 MB; açılışta 1,5 ile 14 sn yerelde. Önceki halinde Orta'da
+indirilen 43 MB'ın 19 MB'ı sonra yerini incelerine bırakan L13-L16 katmanlarıydı. Sınama: 2,5 MB/sn sınırlı deneme sunucusuyla
+(oturumun scratchpad'inde `yavas_sunucu.py`, depoda yok) Orta 72 MB beklendi / 71,7 MB indi, 30 sn, çubuk düzgün, kalan süre doğru.
+Spark (2,7 MB) artık açılışta değil, `gauss.yukle()` içinde dinamik `import()` ile (ilk K basışı); `gauss.yukleniyor` ikinci basışı engeller.
+Başlangıç noktası, kalite ayarları ya da model değişirse acilis.json yeniden ölçülmeli (README "Açılış yüklemesi", `oyun.acilis.ozet()`).
+
 ## Mimari
 
 - Tileset: `./terra_b3dms/tileset.json`. Kök tileset 32 blok içerir. Blok kökleri ENU dönüşüm matrisi taşır, `gltfUpAxis: Z`, `asset.version: 0.0`.

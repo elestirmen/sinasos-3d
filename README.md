@@ -44,7 +44,7 @@ sinasos-3d/
 ├── BASLAT.bat    Windows başlatıcı
 ├── INTERNETE_AC.bat  oyunu Tailscale Funnel ile internete açar (yalnız oyun dosyaları)
 ├── data/         DEM'den üretilen 5 m ızgara: arazi.bin, arazi.json, harita.png; gezi noktaları ve fotoğraf görevleri: noktalar.json;
-│                 sinematik tur: tur.json; görev deneme pozları: gorev_pozlari.json
+│                 sinematik tur: tur.json; görev deneme pozları: gorev_pozlari.json; açılış boyutları (yükleme çubuğu): acilis.json
 ├── muzik/        gezi ve tur müzikleri, künyeleri KUNYE.txt'de
 ├── araclar/      arazi_uret.py: data klasörünü başka bir uçuş için yeniden üretir; tur_uret.py: sinematik tur yolu; kayit_alici.py: video kaydı
 ├── video/        sinematik tur videoları ve OKUBENI (nasıl üretildiği); videolar depoda yok
@@ -71,6 +71,24 @@ Modeli başka bir yerden okutmak da mümkün: bu klasöre `model_yolu.txt` koyup
 - Çarpışma, yerden yükseklik ve iniş, yüklü karolara atılan ışınlarla (BVH hızlandırmalı) hesaplanır.
 - `data/arazi.bin`, Terra'nın `terra_dem/dem.tif` dosyasından üretilen 5 m'lik yerel ENU ızgarasıdır: arazi yüksekliği (DTM), uçuş sınırı (kapsama alanının 25 m içi) ve kapsama maskesi. Mini harita ve halka yerleşimi de buradan gelir.
 - `P` tuşu gimbal kamerasından PNG ve aynı ada sahip bir JSON üretir. Chrome ve Edge'de ilk seferde bir kayıt klasörü sorulur, sonraki fotoğraflar oraya sessizce yazılır. JSON'da kameranın enlem, boylam, elipsoid yüksekliği, yön, gimbal açısı ve iç parametreleri (fx, fy, cx, cy) bulunur. Fotoğrafta drone, gezi etiketleri ve görev vizörü görünmez.
+
+## Açılış yüklemesi
+
+İnternetten açılınca (INTERNETE_AC.bat) karolar evin yükleme hızıyla gelir ve kütüphane önce kaba katmanları gösterir; beklemenin ilk yarısında görüntü bozuk durur. Bu yüzden yardım ekranı aynı zamanda yükleme ekranıdır: "Uçuşa başla" düğmesi, başlangıç görüntüsü tam ayrıntıya gelene kadar bir ilerleme çubuğudur ("Yükleniyor %64"); altında inen ve beklenen megabayt, indirme hızı ve kalan süre yazar. Görüntü hazır olunca düğme açılır. "beklemeden başla" bağlantısı (ya da `H`, `Esc`) beklemeden oyuna geçer; `Enter` yükleme bitince başlatır. Ayarlar ve başlat satırı yardım kutusunun altına sabittir, küçük ekranda da kaydırmadan görünür.
+
+- Yüzde, inen karo baytının (PerformanceObserver, `encodedBodySize`) `data/acilis.json`'daki ölçülmüş açılış boyutuna oranıdır. Kütüphanenin kendi `loadProgress` değeri kaba katmandan inceye geçerken geri düştüğü için (denemede 0,85'ten 0,73'e) kullanılmaz. Çubuk geri gitmez, beklenen aşılırsa %99'da "son karolar geliyor" der. "Hazır" kararını her zaman gerçek durum verir: yarım saniye boyunca bekleyen, inen ya da çözülen karo yok.
+- Açılış boyutları (1920x1080 çizim, 1 Kasım 2026): Düşük 42,3 MB, Orta 77,5 MB (yeni ziyaretçinin varsayılanı), Yüksek 109,9 MB, Ultra 203,3 MB, Maksimum 314,4 MB. Oyun dosyaları bunlara ek yaklaşık 4 MB. Başka çözünürlükte beklenen boyut piksel sayısı oranının 0,43. kuvvetiyle ölçeklenir (1024x768 ile 1920x1080 ölçümlerinden, beş kalitede 0,39-0,45).
+- Yaklaşık süreler (Orta, 1080p): 10 Mbit/sn'de ~65 sn, 20 Mbit/sn'de ~33 sn, 50 Mbit/sn'de ~13 sn. Tarayıcı karoları 7 gün önbellekte tutar; aynı kişinin ikinci açılışı çok daha hızlıdır.
+- Deneme: saniyede 2,5 MB ile sınırlanmış bir sunucuyla (yaklaşık 20 Mbit/sn) Orta'da 72 MB beklendi, 71,7 MB indi, çubuk %1'den %98'e düzgün ilerledi, 30. saniyede düğme açıldı; kalan süre tahmini gerçeğe yakın çıktı.
+- Başlangıç noktası (`AYAR.baslangic`), kalite ayarları ya da model değişirse `data/acilis.json` yeniden ölçülmeli. Her kalite için sayfa boş bellekle açılır (kaliteyi seç, sayfayı yenile), konsolda:
+
+  ```js
+  const O = await import( './araclar/olcum.js' ); O.zamanlayici( true );
+  while ( ! oyun.acilis.bitti ) { oyun.adim( 1 ); await new Promise( r => setTimeout( r, 10 ) ); }
+  oyun.acilis.ozet()   // { kalite, MB, karo, sn, cizim }
+  ```
+
+- Gaussian Splatting çizicisi (Spark, 2,7 MB) açılışta değil, `K` ile splat ilk açıldığında indirilir.
 
 ## Dil
 

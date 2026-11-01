@@ -132,11 +132,22 @@
   .tuslar { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 34px; font-size: 13.5px; }
   .tuslar div { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.06); }
   .tuslar h3 { grid-column: 1 / -1; margin: 12px 0 2px; font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: var(--vurgu); border: 0; }
-  .ayarlar { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-top: 20px; font-size: 13.5px; }
+  /* ayarlar ve başlat satırı kutunun altına sabit: küçük ekranda da yükleme çubuğu kaydırmadan görünsün */
+  .ayarlar { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; font-size: 13.5px; position: sticky; bottom: -26px; z-index: 2;
+    margin: 20px -30px -26px; padding: 14px 30px 16px; background: #141820; border-top: 1px solid var(--panel-kenar); border-radius: 0 0 16px 16px; }
+  .ayarlar #yuklemeBilgi { flex-basis: 100%; margin-top: -4px; }
   .ayarlar select { background: rgba(255,255,255,.08); color: var(--yazi); border: 1px solid rgba(255,255,255,.25); border-radius: 6px; padding: 5px 8px; font: inherit; }
   .ayarlar select option { color: #111; }
-  #basla { margin-left: auto; background: var(--vurgu); color: #1a1205; border: 0; border-radius: 10px; padding: 11px 22px; font: 700 15px var(--font); cursor: pointer; }
+  #basla { position: relative; overflow: hidden; min-width: 168px; margin-left: auto; background: var(--vurgu); color: #1a1205; border: 0; border-radius: 10px; padding: 11px 22px; font: 700 15px var(--font); cursor: pointer; }
   #basla:hover { filter: brightness(1.08); }
+  #basla i { display: none; position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--vurgu); transition: width .35s ease-out; }
+  #basla span { position: relative; font-variant-numeric: tabular-nums; }
+  /* yükleme ekranı: başlangıç görüntüsü tam ayrıntıya gelene kadar düğme ilerleme çubuğu */
+  #basla.yukleniyor { background: rgba(255, 154, 31, .22); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.55); cursor: progress; filter: none; }
+  #basla.yukleniyor i { display: block; }
+  #yuklemeBilgi { text-align: right; font-size: 12.5px; color: var(--soluk); min-height: 18px; font-variant-numeric: tabular-nums; }
+  #yuklemeBilgi button { background: none; border: 0; color: var(--soluk); font: inherit; text-decoration: underline; cursor: pointer; padding: 0; margin-left: 10px; }
+  #yuklemeBilgi button:hover { color: var(--yazi); }
   #turBasla { margin-left: auto; background: none; color: var(--yazi); border: 1px solid rgba(255,255,255,.35); border-radius: 10px; padding: 10px 18px; font: 600 14px var(--font); cursor: pointer; }
   #turBasla:hover { background: rgba(255,255,255,.08); }
   #turBasla + #basla { margin-left: 0; }
@@ -294,7 +305,8 @@
       <label><input type="checkbox" id="pervaneAcik"> <span data-t="hPervaneAyar">Pervane sesi</span></label>
       <label><input type="checkbox" id="muzikAcik" checked> <span data-t="hMuzikAyar">Gezi müziği</span></label>
       <button id="turBasla" type="button" data-t="hTurDugme">Sinematik tur</button>
-      <button id="basla" data-t="hBasla">Uçuşa başla</button>
+      <button id="basla" class="yukleniyor" disabled><i id="baslaDolgu"></i><span id="baslaYazi">Hazırlanıyor…</span></button>
+      <div id="yuklemeBilgi"><span id="yuklemeYazi"></span><button id="beklemeden" type="button" data-t="hBeklemeden">beklemeden başla</button></div>
     </div>
     <div id="hata"></div>
   </div>

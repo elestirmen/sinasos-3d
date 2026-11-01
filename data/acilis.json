@@ -1,0 +1,12 @@
+{
+  "aciklama": "Acilis yuklemesi: baslangic noktasindaki (AYAR.baslangic) ilk goruntu tam ayrintiya gelene kadar inen karo boyutu, kalite basina. Yukleme ekranindaki ilerleme cubugu inen bayti buna oranlar. Olcum 1 Kasim 2026, bos tarayici bellegiyle sayfa her kalite icin yeniden acilarak, takip kamerasi, 1920x1080 cizim (piksel orani 1). Baska bir cozunurlukte beklenen boyut (piksel sayisi orani ^ cozunurlukUssu) ile olceklenir; us 1024x768 ile 1920x1080 olcumlerinden (bes kalitede 0,39-0,45). Baslangic noktasi, kalite ayarlari ya da model degisirse yeniden olculmeli: README.md, 'Acilis yuklemesi'.",
+  "cozunurlukUssu": 0.43,
+  "kalite": {
+    "dusuk": { "MB": 42.3, "karo": 270, "cizim": [ 1920, 1080 ] },
+    "orta": { "MB": 77.5, "karo": 388, "cizim": [ 1920, 1080 ] },
+    "yuksek": { "MB": 109.9, "karo": 517, "cizim": [ 1920, 1080 ] },
+    "ultra": { "MB": 203.3, "karo": 877, "cizim": [ 1920, 1080 ] },
+    "maksimum": { "MB": 314.4, "karo": 1325, "cizim": [ 1920, 1080 ] }
+  },
+  "olcum1024x768": { "dusuk": 28.9, "orta": 50.4, "yuksek": 71.7, "ultra": 132.8, "maksimum": 203.2 }
+}

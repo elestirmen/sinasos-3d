@@ -6,7 +6,6 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { TilesRenderer, Scheduler } from '3d-tiles-renderer';
 import { GLTFExtensionsPlugin, ReorientationPlugin, TilesFadePlugin } from '3d-tiles-renderer/plugins';
 import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh';
-import { SparkRenderer, SplatMesh } from '@sparkjsdev/spark';
 
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
 THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
@@ -154,7 +153,10 @@ const METIN = {
 		hKalite: 'Görüntü kalitesi', hDusuk: 'Düşük (hızlı, en çok 1 GB)', hOrta: 'Orta (en çok 2 GB)', hYuksek: 'Yüksek (en çok 3 GB, güçlü ekran kartı)',
 		hUltra: 'Ultra (en çok 6 GB, 12 GB ve üstü ekran kartı)', hMaksimum: 'Maksimum (uzakta daha ince ayrıntı; en çok 10 GB, 16 GB ekran kartı, ilk yükleme uzun)',
 		hSesAyar: 'Ses', hPervaneAyar: 'Pervane sesi', hMuzikAyar: 'Gezi müziği',
-		hTurDugme: 'Sinematik tur', hBasla: 'Uçuşa başla',
+		hTurDugme: 'Sinematik tur', hBasla: 'Uçuşa başla', hBeklemeden: 'beklemeden başla',
+		hazirlaniyor: 'Hazırlanıyor…', yukleniyorYuzde: p => `Yükleniyor %${ p }`,
+		yukBilgi: ( a, b ) => `Açılış görüntüsü: ${ a } / ${ b } MB`, yukHiz: v => `${ v } MB/sn`, yukKalan: s => `yaklaşık ${ s } sn`,
+		yukSon: 'son karolar geliyor', yukHazir: ( mb, s ) => `Açılış görüntüsü hazır · ${ mb } MB, ${ s } sn`,
 	},
 	en: {
 		baslatiliyor: 'Starting…', modelYukleniyor: 'Loading model…', karolarYukleniyor: p => `Loading tiles ${ p }%`, modelHazir: 'Model ready',
@@ -212,7 +214,10 @@ const METIN = {
 		hKalite: 'Graphics quality', hDusuk: 'Low (fast, up to 1 GB)', hOrta: 'Medium (up to 2 GB)', hYuksek: 'High (up to 3 GB, strong graphics card)',
 		hUltra: 'Ultra (up to 6 GB, graphics card with 12 GB or more)', hMaksimum: 'Maximum (finer detail at a distance; up to 10 GB, 16 GB graphics card, slow first load)',
 		hSesAyar: 'Sound', hPervaneAyar: 'Propeller sound', hMuzikAyar: 'Sightseeing music',
-		hTurDugme: 'Cinematic tour', hBasla: 'Start flying',
+		hTurDugme: 'Cinematic tour', hBasla: 'Start flying', hBeklemeden: 'start without waiting',
+		hazirlaniyor: 'Preparing…', yukleniyorYuzde: p => `Loading ${ p }%`,
+		yukBilgi: ( a, b ) => `Opening view: ${ a } / ${ b } MB`, yukHiz: v => `${ v } MB/s`, yukKalan: s => `about ${ s } s left`,
+		yukSon: 'last tiles arriving', yukHazir: ( mb, s ) => `Opening view ready · ${ mb } MB, ${ s } s`,
 	},
 };
 let dil = guvenliOku( 'mustafapasa-drone-dil' ) === 'en' ? 'en' : 'tr';
@@ -464,29 +469,33 @@ const gauss = {
 		if ( ! durum.hazir ) return;   // çerçeve ve kırpma düzlemleri kur() ile gelir
 		if ( ! this.bilgi ) { mesajGoster( t( 'splatYok' ) ); return; }
 		this.acik = acik;
-		if ( acik && ! this.mesh ) this.yukle();
+		if ( acik && ! this.mesh && ! this.yukleniyor ) this.yukle();
 		if ( this.mesh ) this.mesh.visible = acik && this.yuklendi;
 		this.malzemeleriGuncelle();
 		mesajGoster( t( acik && ! this.yuklendi ? 'splatYukleniyor' : acik ? 'splatAcik' : 'splatKapali' ), '', acik && ! this.yuklendi ? 8000 : 2200 );
 	},
-	yukle() {
-		this.cizici = new SparkRenderer( { renderer } );
-		sahne.add( this.cizici );
-		this.mesh = new SplatMesh( { url: `./splat/${ AYAR.splat }.ply`, raycastable: false } );
-		this.mesh.matrixAutoUpdate = false;
-		this.mesh.matrix.makeBasis( cerceve.E, cerceve.N, YUKARI ).setPosition( cerceve.O );
-		this.mesh.visible = false;
-		sahne.add( this.mesh );
-		this.mesh.initialized.then( () => {
+	// Spark (2,7 MB) açılışta değil, splat ilk açıldığında indirilir: internetten açılış kısalsın
+	async yukle() {
+		this.yukleniyor = true;   // indirme sürerken ikinci K basışı ikinci kez yüklemesin
+		try {
+			const { SparkRenderer, SplatMesh } = await import( '@sparkjsdev/spark' );
+			this.cizici = new SparkRenderer( { renderer } );
+			sahne.add( this.cizici );
+			this.mesh = new SplatMesh( { url: `./splat/${ AYAR.splat }.ply`, raycastable: false } );
+			this.mesh.matrixAutoUpdate = false;
+			this.mesh.matrix.makeBasis( cerceve.E, cerceve.N, YUKARI ).setPosition( cerceve.O );
+			this.mesh.visible = false;
+			sahne.add( this.mesh );
+			await this.mesh.initialized;
 			this.yuklendi = true;
 			this.mesh.visible = this.acik;
 			this.malzemeleriGuncelle();
 			if ( this.acik ) mesajGoster( t( 'splatAcik' ) );
-		} ).catch( e => {
+		} catch ( e ) {
 			console.error( e );
 			this.bilgi = null; this.acik = false;
 			mesajGoster( t( 'splatHata' ), 'uyari' );
-		} );
+		}
 	},
 	get kirp() { return this.acik && this.yuklendi; },
 	malzemeAyarla( m ) {
@@ -629,7 +638,8 @@ addEventListener( 'keydown', e => {
 	if ( e.ctrlKey && ! yardimAcik ) e.preventDefault();
 	if ( tur.aktif ) { if ( ! tur.kayitta && ( e.code === 'Escape' || e.code === 'KeyC' ) ) tur.bitir(); return; }
 	if ( yardimAcik ) {
-		if ( e.code === 'KeyH' || e.code === 'Escape' || e.code === 'Enter' ) basla();
+		// Enter yükleme bitince başlatır; H ve Esc beklemeden de kapatır
+		if ( e.code === 'KeyH' || e.code === 'Escape' || ( e.code === 'Enter' && acilis.bitti ) ) basla();
 		return;
 	}
 	if ( e.repeat ) { tuslar.add( e.code ); return; }
@@ -700,7 +710,7 @@ function kumandaOku() {
 		kenar( 4, () => modSec( durum.mod === 'spor' ? 'normal' : 'cine' ) );
 		kenar( 5, () => modSec( durum.mod === 'cine' ? 'normal' : 'spor' ) );
 	}
-	kenar( 9, () => yardimAcik ? basla() : yardimAc() );
+	kenar( 9, () => yardimAcik ? ( acilis.bitti && basla() ) : yardimAc() );
 	return { yukari: - o( a[ 1 ] || 0 ), donus: o( a[ 0 ] || 0 ), ileri: - o( a[ 3 ] || 0 ), yan: o( a[ 2 ] || 0 ), gimbal: ( b( 12 ) ? 1 : 0 ) - ( b( 13 ) ? 1 : 0 ) };
 }
 
@@ -2141,8 +2151,90 @@ function fotoCek() {
 	}
 }
 
+// ---------------------------------------------------------------- açılış yüklemesi
+// İnternetten oynarken karolar yavaş gelir ve kütüphane önce kaba katmanları gösterir (bekleme süresinin ilk yarısında
+// görüntü bozuk). Bu yüzden yardım ekranı aynı zamanda yükleme ekranıdır: "Uçuşa başla" düğmesi, başlangıç görüntüsü tam
+// ayrıntıya gelene kadar ilerleme çubuğudur. Yüzde, inen karo baytının data/acilis.json'da kalite başına ölçülmüş açılış
+// boyutuna oranıdır; kütüphanenin loadProgress'i kaba katmandan inceye geçerken geri düştüğü için kullanılmaz. Ölçüm başka bir
+// ekran çözünürlüğünde yapıldığından beklenen boyut çizim pikseline göre ölçeklenir; tutmazsa çubuk %99'da bekler.
+// "Hazır" kararını her zaman gerçek durum verir: art arda yarım saniye boyunca bekleyen, inen ya da çözülen karo yok.
+const acilis = {
+	veri: null, bitti: false, oynandi: false, bayt: 0, karo: 0, ornekler: [], sayac: 0, enCok: 0, ilkKaro: 0, sure: 0,
+	izle() {
+		try {
+			new PerformanceObserver( l => { for ( const e of l.getEntries() ) this.say( e ); } ).observe( { type: 'resource', buffered: true } );
+		} catch { /* eski tarayıcı: çubuk loadProgress'e döner */ }
+	},
+	say( e ) {
+		if ( ! e.name.includes( '/terra_b3dms/' ) ) return;
+		this.bayt += e.encodedBodySize || e.transferSize || 0; this.karo ++;
+		if ( ! this.ilkKaro ) this.ilkKaro = e.startTime;
+	},
+	// seçili kalitenin açılış boyutu (bayt), bu ekranın çizim pikseline göre
+	beklenen() {
+		const k = this.veri?.kalite?.[ $( 'kalite' ).value ];
+		if ( ! k ) return 0;
+		const v = renderer.getDrawingBufferSize( _cozunurluk ), oran = v.x * v.y / ( k.cizim[ 0 ] * k.cizim[ 1 ] );
+		return k.MB * 2 ** 20 * THREE.MathUtils.clamp( oran ** ( this.veri.cozunurlukUssu ?? 1 ), 0.4, 3 );
+	},
+	guncelle( simdi ) {   // panel döngüsünde, saniyede 10 kez
+		if ( this.bitti ) return;
+		const s = tiles?.stats;
+		const bos = durum.hazir && s && s.queued + s.downloading + s.parsing === 0 && tiles.loadProgress >= 1;
+		this.sayac = bos ? this.sayac + 1 : 0;
+		if ( this.sayac >= 5 ) {
+			this.bitti = true;
+			this.sure = ( performance.now() - this.ilkKaro ) / 1000;
+		}
+		this.ornekler.push( [ simdi, this.bayt ] );
+		while ( this.ornekler.length > 30 ) this.ornekler.shift();   // son 3 saniye: indirme hızı
+		this.ciz();
+	},
+	// kalite yükleme ekranında değişirse yeni kalitenin karoları beklenir
+	kaliteDegisti() {
+		if ( this.oynandi ) return;
+		this.bitti = false; this.sayac = 0; this.enCok = 0;
+		this.ciz();
+	},
+	ciz() {
+		const dugme = $( 'basla' ), yazi = $( 'baslaYazi' ), bilgi = $( 'yuklemeYazi' );
+		const sayi = ( v, b = 1 ) => v.toLocaleString( dil === 'en' ? 'en-US' : 'tr-TR', { minimumFractionDigits: b, maximumFractionDigits: b } );
+		const MB = b => b / 2 ** 20;
+		$( 'beklemeden' ).hidden = this.bitti;
+		if ( this.bitti ) {
+			dugme.disabled = false; dugme.classList.remove( 'yukleniyor' );
+			yazi.textContent = t( 'hBasla' );
+			bilgi.textContent = this.oynandi || ! this.sure ? '' : t( 'yukHazir', sayi( MB( this.bayt ), 0 ), sayi( this.sure, 0 ) );
+			return;
+		}
+		dugme.disabled = true; dugme.classList.add( 'yukleniyor' );
+		if ( ! durum.hazir ) { yazi.textContent = t( 'hazirlaniyor' ); $( 'baslaDolgu' ).style.width = '0%'; bilgi.textContent = ''; return; }
+		const hedef = this.beklenen();
+		const oran = hedef ? this.bayt / hedef : ( tiles?.loadProgress || 0 ) * 0.9;
+		this.enCok = Math.max( this.enCok, Math.min( 99, Math.floor( oran * 100 ) ) );   // çubuk geri gitmesin
+		yazi.textContent = t( 'yukleniyorYuzde', this.enCok );
+		$( 'baslaDolgu' ).style.width = this.enCok + '%';
+		const ilk = this.ornekler[ 0 ], son = this.ornekler[ this.ornekler.length - 1 ];
+		const hiz = ilk && son[ 0 ] - ilk[ 0 ] > 1000 ? ( son[ 1 ] - ilk[ 1 ] ) / ( son[ 0 ] - ilk[ 0 ] ) * 1000 : 0;
+		const parca = [];
+		if ( hedef ) parca.push( t( 'yukBilgi', sayi( MB( Math.min( this.bayt, hedef ) ), 0 ), sayi( MB( hedef ), 0 ) ) );
+		if ( hiz > 1e4 ) parca.push( t( 'yukHiz', sayi( MB( hiz ) ) ) );
+		if ( hedef && hiz > 1e4 && this.bayt < hedef ) parca.push( t( 'yukKalan', sayi( Math.max( 1, ( hedef - this.bayt ) / hiz ), 0 ) ) );
+		else if ( hedef && this.bayt >= hedef ) parca.push( t( 'yukSon' ) );
+		bilgi.textContent = parca.join( ' · ' );
+	},
+	// ölçüm için (README, "Açılış yüklemesi"): bu açılışta inen karo boyutu ve süresi
+	ozet() {
+		const v = renderer.getDrawingBufferSize( new THREE.Vector2() );
+		return { kalite: $( 'kalite' ).value, bitti: this.bitti, MB: + ( this.bayt / 2 ** 20 ).toFixed( 1 ), karo: this.karo, sn: + this.sure.toFixed( 1 ), cizim: [ v.x, v.y ] };
+	},
+};
+acilis.izle();
+
 // ---------------------------------------------------------------- yardım ekranı
 function basla() {
+	acilis.oynandi = true;
+	if ( ! acilis.bitti ) { acilis.bitti = true; acilis.ciz(); }
 	yardimAcik = false;
 	arayuz.yardim.classList.add( 'gizli' );
 	ses.baslat();
@@ -2153,7 +2245,7 @@ function dilDegistir( yeni ) {
 	dil = yeni; guvenliYaz( 'mustafapasa-drone-dil', dil );
 	dilUygula();
 	$( 'kKamera' ).textContent = t( durum.kamera );
-	gezi.dilYenile(); gorev.listeYaz();
+	gezi.dilYenile(); gorev.listeYaz(); acilis.ciz();
 	if ( ! yardimAcik ) mesajGoster( dil === 'tr' ? 'Türkçe' : 'English' );
 }
 function yardimAc() {
@@ -2161,12 +2253,14 @@ function yardimAc() {
 	arayuz.yardim.classList.remove( 'gizli' );
 }
 $( 'basla' ).addEventListener( 'click', basla );
+$( 'beklemeden' ).addEventListener( 'click', basla );
 $( 'turBasla' ).addEventListener( 'click', () => tur.baslat() );
 const kayitliKalite = guvenliOku( 'mustafapasa-drone-kalite' );
 if ( kayitliKalite in AYAR.kalite ) $( 'kalite' ).value = kayitliKalite;
 $( 'kalite' ).addEventListener( 'change', e => {
 	guvenliYaz( 'mustafapasa-drone-kalite', e.target.value );
 	if ( tiles ) kaliteUygula( e.target.value );
+	acilis.kaliteDegisti();
 } );
 $( 'sesAcik' ).addEventListener( 'change', e => ses.ac( e.target.checked ) );
 $( 'pervaneAcik' ).checked = ses.pervane;
@@ -2178,6 +2272,7 @@ $( 'geziSifirla' ).addEventListener( 'click', () => gezi.sifirla() );
 $( 'albumSifirla' ).addEventListener( 'click', () => gorev.sifirla() );
 for ( const b of document.querySelectorAll( '#dilSec button' ) ) b.addEventListener( 'click', () => dilDegistir( b.dataset.dil ) );
 dilUygula();
+acilis.ciz();
 
 addEventListener( 'resize', () => {
 	for ( const k of [ takipKam, fpvKam ] ) { k.aspect = innerWidth / innerHeight; k.updateProjectionMatrix(); }
@@ -2232,6 +2327,7 @@ function dongu() {
 
 	if ( simdi - panelZaman > 100 ) {
 		panelZaman = simdi;
+		acilis.guncelle( simdi );
 		if ( durum.hazir && ! tur.aktif ) gorev.guncelle();
 		panelGuncelle( simdi, fps ); muzik.guncelle();
 	}
@@ -2248,6 +2344,7 @@ function dongu() {
 		haritaResim.src = AYAR.veri + 'harita.png';
 		// gezi noktaları isteğe bağlı: dosya yoksa ya da bozuksa oyun gezisiz açılır
 		gezi.veri = await fetch( AYAR.veri + 'noktalar.json' ).then( r => r.ok ? r.json() : null ).catch( () => null );
+		acilis.veri = await fetch( AYAR.veri + 'acilis.json' ).then( r => r.ok ? r.json() : null ).catch( () => null );
 		tur.veri = await fetch( AYAR.veri + AYAR.tur ).then( r => r.ok ? r.json() : null ).catch( () => null );
 		if ( tur.veri ) tur.hazirla();
 		await gauss.hazirla();
@@ -2260,7 +2357,7 @@ function dongu() {
 } )();
 
 // test ve hata ayıklama için
-window.oyun = { durum, parkur, gezi, gorev, gauss, muzik, ses, tur, cerceve, get tiles() { return tiles; }, get arazi() { return arazi; }, get solma() { return solma; }, solmaBitir, dunya, enu, isin, THREE, renderer, draco, fpvKam, sahne,
+window.oyun = { durum, parkur, gezi, gorev, gauss, muzik, ses, tur, acilis, cerceve, get tiles() { return tiles; }, get arazi() { return arazi; }, get solma() { return solma; }, solmaBitir, dunya, enu, isin, THREE, renderer, draco, fpvKam, sahne,
 	// döngüyü elle ilerletir (tarayıcı sekmesi arka plandayken denemek için)
 	adim( n = 1 ) { for ( let i = 0; i < n; i ++ ) dongu(); },
 	isinla( e, n, yerden = 20 ) { dunya( e, n, arazi.yukseklik( e, n ) + yerden, durum.pos ); durum.yerde = false; durum.vel.set( 0, 0, 0 ); durum.kamYerlesti = false; },
