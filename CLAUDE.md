@@ -86,6 +86,15 @@ Başlangıç noktası, kalite ayarları ya da model değişirse acilis.json yeni
   Tur dosyasına `"ham": true` yazılırsa `tur.ciz()` şerit, yazı ve kararma çizmez (deneme pozları için).
 - Video kaydı: `tur.kaydet({ bicim: 'h264' | 'jpeg', bas, son, fps, w, h, hata })`. Animasyon döngüsünü durdurur, `Scheduler.setXRSession()` ile kütüphanenin kuyruklarını `MessageChannel` tabanlı `hemen()`e bağlar (gizli panelde setTimeout saniyede bire kısılıyordu), her karede art arda iki boş güncellemeye kadar yükleme bekler, WebCodecs donanım H.264 (Annex B, 40 Mbps) ile kodlayıp `araclar/kayit_alici.py`'ye (`/ekle`) gönderir. Ölçümler: tarayıcı JPEG toBlob kare başına ~840 ms, ham RGBA gönderimi ~350 ms, WebCodecs ile 5682 kare 227 sn. Çıktı `video/mustafapasa_sinematik_tur.mp4` (x264 CRF 19, AAC, 571 MB). Panel gizliyken sayfa hiç kare çizmezse kaydet() ilk kurulumu `dongu()`yu elle çağırarak yapar.
 - Arazi örtüsü (`araziOrtusuKur()`): arazi.bin'den modelin 3 m altında, krem renkli, gölgelendirilmiş ızgara; model deliklerini kapatır, çarpışmaya girmez.
+- Drone modeli (1 Kasım, kullanıcı: "siyah drone dandik duruyor, Phantom 4 gibi olsun"): `droneYap()` Phantom tarzı, logo yok.
+  Parlak beyaz gövde (iki yarım elipsoit, MeshPhysicalMaterial + clearcoat), yassı kapsül kollar, beyaz motor yuvası + gri bant ve
+  metal kapak, iki kanatlı inceltilmiş pervaneler (ilk çocuk `kanatlar`, dönerken gizlenir; açık gri bulanıklık diski), beyaz iniş takımı
+  (kızak altı -0,12 = `AYAR.govde`), önde gimballi kamera (`userData.kamera`; `droneGorsel` dünyaya göre eğimi `durum.gimbal` olacak
+  biçimde döndürür). Önde kırmızı sabit, arkada yeşil yanıp sönen motor ışıkları (`arkaLed` grubu), arkada batarya kapağı ve 4 yeşil nokta.
+  Ölçek eski modelle aynı (motorlar merkezden 0,36 m; gerçek Phantom'un ~2 katı, takip kamerasından seçilsin diye).
+  Yansıma: `ortamHaritasi()` gökyüzü renklerinden PMREM (yalnız drone malzemeleri, envMapIntensity 0,6). Işıklar yalnız drone'u
+  etkilediği için ona göre ayarlandı: HemisphereLight 1,7 → 0,9, DirectionalLight 2,2 → 2,4 (üç ayar yakın plandan karşılaştırıldı;
+  eskisinde beyaz üst yüz düz beyaza doyuyordu). Kullanıcı kendi tarayıcısında henüz görmedi.
 - Pervane sesi (27 Ekim): `ses.pervane`, `U` tuşu ve `#pervaneAcik` kutusu, localStorage `mustafapasa-drone-pervane`. Kullanıcı uğultuyu rahatsız edici buldu; süzgeç 520 Hz, kazanç 0,025'e indirildi.
   27 Ekim akşamı kullanıcının kararı: varsayılan KAPALI (localStorage'da '1' yoksa kapalı; daha önce U ile açan tarayıcıda açık kalır).
 - Yükseklik tuşları (27 Ekim akşamı, kullanıcı istedi): Shift yüksel (kalkış), Ctrl alçal (iniş); Boşluk da yükseltir (eski alışkanlık).
@@ -120,8 +129,8 @@ Başlangıç noktası, kalite ayarları ya da model değişirse acilis.json yeni
   hemen açılır (yerde değil). Açılış mesajı `havada`. Halka parkuru `AYAR.parkurMerkez` (0, 0) noktasından üretilir, kayıtlı en iyi süre geçerli kalır.
 - Kullanıcının bilgisayarı: RTX 5060 Ti 16 GB, 64 GB RAM, 24 çekirdek, 4K monitör (%175 ölçek, 59 Hz). Model C: sürücüsünde (taşınmadan önce E:, USB harici HDD).
 - Git (27 Ekim): depo kökü bu klasör, uzak depo `origin` = https://github.com/elestirmen/sinasos-3d (özel; kullanıcı açtı, GitHub Apache 2.0
-  `LICENSE` ile "Initial commit" ekledi, yerel commit'ler onun üzerine alındı). Claude'un `git push`u otomatik izin denetiminde beş kez
-  reddedildi (kullanıcı izin verdiğini söyledikten sonra da); gönderimi kullanıcı kendi terminalinden yapıyor.
+  `LICENSE` ile "Initial commit" ekledi, yerel commit'ler onun üzerine alındı). 27 Ekim'de Claude'un `git push`u otomatik
+  izin denetiminde reddediliyordu; 1 Kasım'da kullanıcı "sen gönder" deyince `git push origin main` geçti.
   Lisans (27 Ekim, kullanıcı kararı): kod MIT (`LICENSE`), içerik CC BY 4.0 (`LICENSE-ICERIK.md`); GitHub'ın koyduğu Apache 2.0 metni MIT ile
   değiştirildi. Kütüphaneler ve müzikler kendi lisanslarında, model ve ham veri lisans dışı. Depoya girmeyenler `.gitignore`da: terra_b3dms/, model_yolu.txt, video/*.mp4, video/ham/, __pycache__.
   Commit mesajlarının sonuna `Co-Authored-By: Claude ...` satırı eklenir. Byzantine Chant kaydında icracı izni gri alan (muzik/KUNYE.txt):

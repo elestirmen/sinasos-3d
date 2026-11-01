@@ -331,8 +331,10 @@ gok.frustumCulled = false;
 gok.renderOrder = - 1000;
 sahne.add( gok );
 
-sahne.add( new THREE.HemisphereLight( 0xe6eef6, 0x8a7a60, 1.7 ) );
-const gunesIsik = new THREE.DirectionalLight( 0xfff4e6, 2.2 );
+// ışıklar yalnız drone'u aydınlatır (model karoları ışıksız); beyaz gövdenin biçimi okunsun diye ortam ışığı düşük,
+// güneş güçlü (üç ayar yakın plandan karşılaştırılıp seçildi)
+sahne.add( new THREE.HemisphereLight( 0xe6eef6, 0x8a7a60, 0.9 ) );
+const gunesIsik = new THREE.DirectionalLight( 0xfff4e6, 2.4 );
 sahne.add( gunesIsik, gunesIsik.target );
 
 // ---------------------------------------------------------------- 3D Tiles
@@ -524,46 +526,106 @@ function isin( baslangic, yon, uzaklik ) {
 }
 
 // ---------------------------------------------------------------- drone modeli
+// Drone'un parlak gövdesi için yansıma: gökyüzü renginde basit bir ortam haritası (yalnız drone ışıktan etkilenir,
+// model karoları ışıksız çizilir)
+function ortamHaritasi() {
+	const ortam = new THREE.Scene();
+	ortam.add( new THREE.Mesh( new THREE.SphereGeometry( 10, 32, 16 ), new THREE.ShaderMaterial( {
+		side: THREE.BackSide,
+		uniforms: { ust: { value: new THREE.Color( ZENIT ) }, ufuk: { value: new THREE.Color( UFUK ) }, alt: { value: new THREE.Color( 0x8f8167 ) } },
+		vertexShader: 'varying vec3 vY; void main() { vY = normalize( position ); gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 ); }',
+		fragmentShader: `uniform vec3 ust; uniform vec3 ufuk; uniform vec3 alt; varying vec3 vY;
+			void main() { float y = vY.y; gl_FragColor = vec4( y > 0.0 ? mix( ufuk, ust, pow( y, 0.6 ) ) : mix( ufuk, alt, pow( - y, 0.4 ) ), 1.0 ); }`,
+	} ) ) );
+	const pm = new THREE.PMREMGenerator( renderer ), harita = pm.fromScene( ortam, 0.02 ).texture;
+	pm.dispose();
+	return harita;
+}
+
+// Phantom tarzı dört rotorlu: parlak beyaz gövde ve kollar, gri motor kapakları, iki kanatlı pervaneler, beyaz iniş takımı,
+// önde gimballi kamera. Ölçek oyunun önceki modeliyle aynı (motorlar merkezden 0,36 m, ayak altı -0,12 m = AYAR.govde),
+// yani gerçek bir Phantom'un yaklaşık iki katı: takip kamerasından seçilebilsin diye. Ön -Z.
 function droneYap() {
-	const g = new THREE.Group();
-	const govde = new THREE.MeshStandardMaterial( { color: 0x2d3138, roughness: 0.55, metalness: 0.25 } );
-	const kabuk = new THREE.MeshStandardMaterial( { color: 0x4b5058, roughness: 0.4, metalness: 0.3 } );
-	const turuncu = new THREE.MeshStandardMaterial( { color: 0xff8a1a, roughness: 0.5, emissive: 0x3a1800 } );
-	const siyah = new THREE.MeshStandardMaterial( { color: 0x111317, roughness: 0.7 } );
-	const kutu = ( w, h, d, mat, x, y, z ) => { const m = new THREE.Mesh( new THREE.BoxGeometry( w, h, d ), mat ); m.position.set( x, y, z ); g.add( m ); return m; };
+	const g = new THREE.Group(), ortamH = ortamHaritasi();
+	const yansima = { envMap: ortamH, envMapIntensity: 0.6 };
+	const beyaz = new THREE.MeshPhysicalMaterial( { color: 0xeef0ef, roughness: 0.34, metalness: 0, clearcoat: 0.9, clearcoatRoughness: 0.12, ...yansima } );
+	const gri = new THREE.MeshStandardMaterial( { color: 0x8b9198, roughness: 0.38, metalness: 0.65, ...yansima } );
+	const koyu = new THREE.MeshStandardMaterial( { color: 0x2b2e33, roughness: 0.55, metalness: 0.2, ...yansima } );
+	const cam = new THREE.MeshStandardMaterial( { color: 0x0c1622, roughness: 0.06, metalness: 0.9, ...yansima } );
+	const ekle = ( geo, mat, x = 0, y = 0, z = 0, ebeveyn = g ) => { const m = new THREE.Mesh( geo, mat ); m.position.set( x, y, z ); ebeveyn.add( m ); return m; };
+	// iki nokta arasında silindir (iniş takımı)
+	const cubuk = ( a, b, r, mat ) => {
+		const d = new THREE.Vector3().subVectors( b, a ), m = ekle( new THREE.CylinderGeometry( r, r, d.length(), 12 ), mat );
+		m.position.copy( a ).addScaledVector( d, 0.5 );
+		m.quaternion.setFromUnitVectors( YUKARI, d.normalize() );
+		return m;
+	};
 
-	kutu( 0.30, 0.10, 0.40, govde, 0, 0.03, 0 );
-	kutu( 0.22, 0.05, 0.28, kabuk, 0, 0.10, 0.01 );
-	kutu( 0.30, 0.025, 0.02, turuncu, 0, 0.05, - 0.205 );
-	for ( const [ x, z ] of [ [ - 0.1, - 0.13 ], [ 0.1, - 0.13 ], [ - 0.1, 0.13 ], [ 0.1, 0.13 ] ] ) kutu( 0.016, 0.1, 0.016, siyah, x, - 0.07, z );
-	kutu( 0.07, 0.07, 0.07, siyah, 0, - 0.03, - 0.2 );                        // gimbal
-	const lens = new THREE.Mesh( new THREE.CylinderGeometry( 0.022, 0.022, 0.02, 16 ), new THREE.MeshStandardMaterial( { color: 0x0b1a2a, roughness: 0.1, metalness: 0.8 } ) );
-	lens.rotation.x = Math.PI / 2; lens.position.set( 0, - 0.03, - 0.24 ); g.add( lens );
+	// gövde: üstte yüksek, altta basık iki yarım elipsoit
+	const ust = ekle( new THREE.SphereGeometry( 1, 40, 16, 0, Math.PI * 2, 0, Math.PI / 2 ), beyaz, 0, 0.02, 0.01 );
+	ust.scale.set( 0.14, 0.085, 0.19 );
+	const alt = ekle( new THREE.SphereGeometry( 1, 40, 10, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2 ), beyaz, 0, 0.02, 0.01 );
+	alt.scale.set( 0.14, 0.045, 0.19 );
+	// arkada batarya kapağı ve dört seviye ışığı
+	const batarya = ekle( new THREE.BoxGeometry( 0.09, 0.03, 0.02 ), gri, 0, 0.04, 0.195 );
+	for ( let i = 0; i < 4; i ++ ) ekle( new THREE.SphereGeometry( 0.004, 6, 4 ), new THREE.MeshBasicMaterial( { color: 0x9dff7a } ), - 0.024 + i * 0.016, 0.042, 0.011, batarya );
 
-	const pervaneler = [];
-	const kol = new THREE.CylinderGeometry( 0.016, 0.016, 0.34, 8 );
-	const motor = new THREE.CylinderGeometry( 0.034, 0.034, 0.05, 16 );
-	const kanat = new THREE.BoxGeometry( 0.36, 0.004, 0.032 );
-	const bulanik = new THREE.CircleGeometry( 0.19, 32 );
-	const bulanikMat = new THREE.MeshBasicMaterial( { color: 0x222222, transparent: true, opacity: 0.0, depthWrite: false, side: THREE.DoubleSide } );
+	const R = 0.36, pervaneler = [], arkaLed = new THREE.Group();
+	const kolGeo = new THREE.CapsuleGeometry( 0.036, R - 0.13, 6, 16 );
+	const kanatGeo = new THREE.BoxGeometry( 0.2, 0.005, 0.034 );
+	{   // kanat uca doğru incelir
+		const p = kanatGeo.attributes.position;
+		for ( let i = 0; i < p.count; i ++ ) { const u = ( p.getX( i ) + 0.1 ) / 0.2; p.setZ( i, p.getZ( i ) * ( 1 - 0.55 * u ) ); }
+		kanatGeo.translate( 0.1, 0, 0 ); kanatGeo.computeVertexNormals();
+	}
+	const bulanik = new THREE.CircleGeometry( 0.205, 40 );
+	const bulanikMat = new THREE.MeshBasicMaterial( { color: 0x9aa2aa, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide } );
 	for ( const a of [ 45, 135, 225, 315 ] ) {
 		const r = a * DERECE, dx = Math.sin( r ), dz = - Math.cos( r );
-		const k = new THREE.Mesh( kol, govde );
-		k.rotation.set( Math.PI / 2, 0, 0 ); k.rotation.y = 0;
-		k.position.set( dx * 0.2, 0.05, dz * 0.2 );
-		k.lookAt( dx * 2, 0.05, dz * 2 ); k.rotateX( Math.PI / 2 );
-		g.add( k );
-		const mo = new THREE.Mesh( motor, siyah ); mo.position.set( dx * 0.37, 0.07, dz * 0.37 ); g.add( mo );
-		const p = new THREE.Group(); p.position.set( dx * 0.37, 0.105, dz * 0.37 );
-		const b = new THREE.Mesh( kanat, siyah ); p.add( b );
-		const d = new THREE.Mesh( bulanik, bulanikMat ); d.rotation.x = - Math.PI / 2; p.add( d );
+		// kol: gövdeden motora, yassı kapsül
+		const kolG = new THREE.Group(); kolG.rotation.y = - r; g.add( kolG );
+		const kol = ekle( kolGeo, beyaz, 0, 0.025, - ( 0.07 + R ) / 2, kolG );
+		kol.rotation.x = Math.PI / 2; kol.scale.set( 1, 1, 0.68 );
+		// motor yuvası: beyaz gövde, gri bant, gri metal motor kapağı
+		const mx = dx * R, mz = dz * R;
+		ekle( new THREE.CylinderGeometry( 0.05, 0.04, 0.075, 28 ), beyaz, mx, 0.03, mz );
+		ekle( new THREE.CylinderGeometry( 0.0505, 0.0505, 0.012, 28 ), gri, mx, 0.061, mz );
+		ekle( new THREE.CylinderGeometry( 0.04, 0.042, 0.03, 28 ), gri, mx, 0.082, mz );
+		ekle( new THREE.CylinderGeometry( 0.017, 0.017, 0.016, 16 ), koyu, mx, 0.104, mz );
+		// pervane: iki kanat (ilk çocuk; dönerken gizlenir), bulanıklık diski
+		const p = new THREE.Group(); p.position.set( mx, 0.11, mz );
+		const kanatlar = new THREE.Group(); p.add( kanatlar );
+		for ( const s of [ 0, Math.PI ] ) { const k = ekle( kanatGeo, koyu, 0, 0, 0, kanatlar ); k.rotation.y = s; k.rotation.x = 0.12 * ( s ? - 1 : 1 ); }
+		const d = ekle( bulanik, bulanikMat, 0, 0, 0, p ); d.rotation.x = - Math.PI / 2;
 		p.userData.yon = a % 180 === 45 ? 1 : - 1;
+		p.rotation.y = a * DERECE;
 		g.add( p ); pervaneler.push( p );
+		// motor altında ışık: önde kırmızı (sabit), arkada yeşil (yanıp söner)
+		const on = dz < 0, isik = ekle( new THREE.SphereGeometry( 0.011, 10, 6 ), new THREE.MeshBasicMaterial( { color: on ? 0xff2a1a : 0x4dff7a } ), mx * 0.97, - 0.012, mz * 0.97 );
+		if ( ! on ) { g.remove( isik ); arkaLed.add( isik ); }
 	}
-	const led = ( renk, x, z ) => { const m = new THREE.Mesh( new THREE.SphereGeometry( 0.014, 8, 8 ), new THREE.MeshBasicMaterial( { color: renk } ) ); m.position.set( x, 0.04, z ); g.add( m ); return m; };
-	led( 0x7dff9a, - 0.37 * 0.71, - 0.37 * 0.71 ); led( 0x7dff9a, 0.37 * 0.71, - 0.37 * 0.71 );
-	const arkaLed = led( 0xff3b30, 0, 0.205 );
-	g.userData = { pervaneler, bulanikMat, arkaLed };
+	g.add( arkaLed );
+
+	// iniş takımı: iki yanda öne ve arkaya açılan bacaklar, altta kızak (kızak altı -0,12)
+	for ( const s of [ - 1, 1 ] ) {
+		const kizakY = - 0.109, ust1 = new THREE.Vector3( s * 0.085, - 0.01, - 0.07 ), ust2 = new THREE.Vector3( s * 0.085, - 0.01, 0.08 );
+		const alt1 = new THREE.Vector3( s * 0.15, kizakY, - 0.1 ), alt2 = new THREE.Vector3( s * 0.15, kizakY, 0.11 );
+		cubuk( ust1, alt1, 0.011, beyaz ); cubuk( ust2, alt2, 0.011, beyaz );
+		cubuk( new THREE.Vector3( s * 0.15, kizakY, - 0.15 ), new THREE.Vector3( s * 0.15, kizakY, 0.16 ), 0.011, beyaz );
+		for ( const z of [ - 0.15, 0.16 ] ) ekle( new THREE.SphereGeometry( 0.011, 10, 6 ), beyaz, s * 0.15, kizakY, z );
+	}
+
+	// gimbal ve kamera: gövdenin önünde, altta; kamera grubu oyunun gimbal açısıyla eğilir
+	ekle( new THREE.BoxGeometry( 0.05, 0.03, 0.035 ), gri, 0, - 0.03, - 0.12 );
+	const kamera = new THREE.Group(); kamera.position.set( 0, - 0.068, - 0.135 ); g.add( kamera );
+	for ( const s of [ - 1, 1 ] ) ekle( new THREE.BoxGeometry( 0.008, 0.05, 0.03 ), gri, s * 0.043, 0.012, 0.004, kamera );
+	ekle( new THREE.BoxGeometry( 0.072, 0.058, 0.068 ), gri, 0, 0, 0, kamera );
+	const objektif = ekle( new THREE.CylinderGeometry( 0.024, 0.026, 0.02, 24 ), koyu, 0, 0, - 0.042, kamera );
+	objektif.rotation.x = Math.PI / 2;
+	const mercek = ekle( new THREE.CylinderGeometry( 0.016, 0.016, 0.004, 24 ), cam, 0, 0, - 0.0525, kamera );
+	mercek.rotation.x = Math.PI / 2;
+
+	g.userData = { pervaneler, bulanikMat, arkaLed, kamera };
 	return g;
 }
 const drone = droneYap();
@@ -1898,7 +1960,9 @@ function droneGorsel( dt, simdi ) {
 	durum.egimZ += ( hedefZ - durum.egimZ ) * k;
 	drone.position.copy( durum.pos );
 	drone.rotation.set( durum.egimX, durum.yaw, durum.egimZ, 'YXZ' );
-	const { pervaneler, bulanikMat, arkaLed } = drone.userData;
+	const { pervaneler, bulanikMat, arkaLed, kamera } = drone.userData;
+	// gimbal kamerayı gövdenin eğiminden bağımsız tutar: dünyaya göre eğimi oyunun gimbal açısı
+	kamera.rotation.set( durum.gimbal - durum.egimX, 0, - durum.egimZ );
 	const donuyor = ! durum.yerde;
 	for ( const p of pervaneler ) p.rotation.y += ( donuyor ? 70 : 0 ) * p.userData.yon * dt;
 	pervaneler.forEach( p => { p.children[ 0 ].visible = ! donuyor; } );
