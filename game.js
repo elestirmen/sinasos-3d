@@ -152,7 +152,8 @@ const METIN = {
 		hGeziListe: 'Sinasos gezisi', hZiyaretSifirla: 'ziyaretleri sıfırla', hAlbumBaslik: 'Sinasos albümü · fotoğraf görevleri', hAlbumSifirla: 'albümü sıfırla',
 		hKalite: 'Görüntü kalitesi', hDusuk: 'Düşük (hızlı, en çok 1 GB)', hOrta: 'Orta (en çok 2 GB)', hYuksek: 'Yüksek (en çok 3 GB, güçlü ekran kartı)',
 		hUltra: 'Ultra (en çok 6 GB, 12 GB ve üstü ekran kartı)', hMaksimum: 'Maksimum (uzakta daha ince ayrıntı; en çok 10 GB, 16 GB ekran kartı, ilk yükleme uzun)',
-		hSesAyar: 'Ses', hPervaneAyar: 'Pervane sesi', hMuzikAyar: 'Gezi müziği',
+		hSesAyar: 'Ses', hPervaneAyar: 'Pervane sesi', hMuzikAyar: 'Gezi müziği', hTamEkran: 'Tam ekran',
+		hTamEkranAciklama: "Chrome ve Edge'de tam ekranda Ctrl ile alçalırken W ileri gider, sekme kapanmaz. Çıkmak için Esc basılı tutulur.",
 		hTurDugme: 'Sinematik tur', hBasla: 'Uçuşa başla', hBeklemeden: 'beklemeden başla',
 		hazirlaniyor: 'Hazırlanıyor…', yukleniyorYuzde: p => `Yükleniyor %${ p }`,
 		yukBilgi: ( a, b ) => `Açılış görüntüsü: ${ a } / ${ b } MB`, yukHiz: v => `${ v } MB/sn`, yukKalan: s => `yaklaşık ${ s } sn`,
@@ -213,7 +214,8 @@ const METIN = {
 		hGeziListe: 'Sinasos sights', hZiyaretSifirla: 'reset visits', hAlbumBaslik: 'Sinasos album · photo missions', hAlbumSifirla: 'reset album',
 		hKalite: 'Graphics quality', hDusuk: 'Low (fast, up to 1 GB)', hOrta: 'Medium (up to 2 GB)', hYuksek: 'High (up to 3 GB, strong graphics card)',
 		hUltra: 'Ultra (up to 6 GB, graphics card with 12 GB or more)', hMaksimum: 'Maximum (finer detail at a distance; up to 10 GB, 16 GB graphics card, slow first load)',
-		hSesAyar: 'Sound', hPervaneAyar: 'Propeller sound', hMuzikAyar: 'Sightseeing music',
+		hSesAyar: 'Sound', hPervaneAyar: 'Propeller sound', hMuzikAyar: 'Sightseeing music', hTamEkran: 'Full screen',
+		hTamEkranAciklama: 'In Chrome and Edge, in full screen W moves forward while you descend with Ctrl and the tab does not close. Hold Esc to exit.',
 		hTurDugme: 'Cinematic tour', hBasla: 'Start flying', hBeklemeden: 'start without waiting',
 		hazirlaniyor: 'Preparing…', yukleniyorYuzde: p => `Loading ${ p }%`,
 		yukBilgi: ( a, b ) => `Opening view: ${ a } / ${ b } MB`, yukHiz: v => `${ v } MB/s`, yukKalan: s => `about ${ s } s left`,
@@ -231,6 +233,7 @@ function dilUygula() {
 	document.documentElement.lang = dil;
 	for ( const e of document.querySelectorAll( '[data-t]' ) ) e.textContent = t( e.dataset.t );
 	for ( const e of document.querySelectorAll( '[data-h]' ) ) e.innerHTML = t( e.dataset.h );
+	for ( const e of document.querySelectorAll( '[data-t-title]' ) ) e.title = t( e.dataset.tTitle );
 	for ( const b of document.querySelectorAll( '#dilSec button' ) ) b.classList.toggle( 'secili', b.dataset.dil === dil );
 }
 
@@ -696,7 +699,7 @@ let yardimAcik = true;
 addEventListener( 'keydown', e => {
 	if ( [ 'Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight' ].includes( e.code ) ) e.preventDefault();
 	// Ctrl alçaltma tuşu: alçalırken basılan oyun tuşları tarayıcı kısayolu olmasın (Ctrl+R yenileme, Ctrl+F arama, Ctrl+S, Ctrl+P ...).
-	// Ctrl+W, Ctrl+T ve Ctrl+N'yi tarayıcı sayfaya bırakmaz; Ctrl+W'ye karşı aşağıdaki beforeunload sorusu var.
+	// Ctrl+W, Ctrl+T ve Ctrl+N ancak tam ekranda klavye kilitliyken buraya gelir (aşağıda tamEkran).
 	if ( e.ctrlKey && ! yardimAcik ) e.preventDefault();
 	if ( tur.aktif ) { if ( ! tur.kayitta && ( e.code === 'Escape' || e.code === 'KeyC' ) ) tur.bitir(); return; }
 	if ( yardimAcik ) {
@@ -710,7 +713,28 @@ addEventListener( 'keydown', e => {
 } );
 addEventListener( 'keyup', e => tuslar.delete( e.code ) );
 addEventListener( 'blur', () => tuslar.clear() );
-// uçarken Ctrl ile alçalıp W ile ileri gitmek Chrome/Edge'de Ctrl+W: sekme kapanmadan önce "Siteden ayrılsın mı?" diye sorulur
+
+// Tam ekran ve klavye kilidi. Alçalma tuşu Ctrl; Ctrl+W (sekmeyi kapat), Ctrl+T ve Ctrl+N tarayıcı kısayollarıdır ve normal
+// pencerede sayfaya hiç iletilmez. Chrome ve Edge'de sayfa tam ekrandayken navigator.keyboard.lock() bu kısayolları da oyuna
+// bırakır; bu yüzden uçuş başlarken (ayar açıksa) tam ekrana geçilir ve klavye kilitlenir. Kilitliyken tam ekrandan çıkmak için
+// Esc basılı tutulur (kısa basış oyuna gider). requestFullscreen bir tıklama ya da tuş basışı ister; Esc ile başlatınca açılmaz.
+const tamEkran = {
+	acik: guvenliOku( 'mustafapasa-drone-tamekran' ) !== '0',
+	kilitli: false,
+	async gir() {
+		if ( ! this.acik || ! document.documentElement.requestFullscreen ) return;
+		try {
+			if ( ! document.fullscreenElement ) await document.documentElement.requestFullscreen( { navigationUI: 'hide' } );
+			if ( navigator.keyboard?.lock ) { await navigator.keyboard.lock(); this.kilitli = true; }
+		} catch { /* izin yok ya da kullanıcı hareketi yok: aşağıdaki soru yedekte */ }
+	},
+	ayarla( acik ) {
+		this.acik = acik; guvenliYaz( 'mustafapasa-drone-tamekran', acik ? '1' : '0' );
+		if ( ! acik && document.fullscreenElement ) document.exitFullscreen().catch( () => {} );
+	},
+};
+document.addEventListener( 'fullscreenchange', () => { if ( ! document.fullscreenElement ) tamEkran.kilitli = false; } );
+// Kilit yoksa (Firefox, Safari, tam ekran kapalı) uçarken Ctrl ile alçalıp W'ye basmak sekmeyi kapatır: önce "Siteden ayrılsın mı?" sorulur
 addEventListener( 'beforeunload', e => {
 	if ( durum.hazir && ! durum.yerde && ( tuslar.has( 'ControlLeft' ) || tuslar.has( 'ControlRight' ) ) ) { e.preventDefault(); e.returnValue = ''; }
 } );
@@ -2302,6 +2326,7 @@ function basla() {
 	yardimAcik = false;
 	arayuz.yardim.classList.add( 'gizli' );
 	ses.baslat();
+	tamEkran.gir();
 	renderer.domElement.focus();
 	if ( durum.hazir ) mesajGoster( t( durum.yerde ? 'kalkisIcin' : 'havada' ), '', 4000 );
 }
@@ -2318,7 +2343,9 @@ function yardimAc() {
 }
 $( 'basla' ).addEventListener( 'click', basla );
 $( 'beklemeden' ).addEventListener( 'click', basla );
-$( 'turBasla' ).addEventListener( 'click', () => tur.baslat() );
+$( 'turBasla' ).addEventListener( 'click', () => { tamEkran.gir(); tur.baslat(); } );
+$( 'tamEkranAcik' ).checked = tamEkran.acik;
+$( 'tamEkranAcik' ).addEventListener( 'change', e => tamEkran.ayarla( e.target.checked ) );
 const kayitliKalite = guvenliOku( 'mustafapasa-drone-kalite' );
 if ( kayitliKalite in AYAR.kalite ) $( 'kalite' ).value = kayitliKalite;
 $( 'kalite' ).addEventListener( 'change', e => {
@@ -2421,7 +2448,7 @@ function dongu() {
 } )();
 
 // test ve hata ayıklama için
-window.oyun = { durum, parkur, gezi, gorev, gauss, muzik, ses, tur, acilis, cerceve, get tiles() { return tiles; }, get arazi() { return arazi; }, get solma() { return solma; }, solmaBitir, dunya, enu, isin, THREE, renderer, draco, fpvKam, sahne,
+window.oyun = { durum, parkur, gezi, gorev, gauss, muzik, ses, tur, acilis, tamEkran, cerceve, get tiles() { return tiles; }, get arazi() { return arazi; }, get solma() { return solma; }, solmaBitir, dunya, enu, isin, THREE, renderer, draco, fpvKam, sahne,
 	// döngüyü elle ilerletir (tarayıcı sekmesi arka plandayken denemek için)
 	adim( n = 1 ) { for ( let i = 0; i < n; i ++ ) dongu(); },
 	isinla( e, n, yerden = 20 ) { dunya( e, n, arazi.yukseklik( e, n ) + yerden, durum.pos ); durum.yerde = false; durum.vel.set( 0, 0, 0 ); durum.kamYerlesti = false; },

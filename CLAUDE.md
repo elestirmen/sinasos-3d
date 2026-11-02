@@ -100,7 +100,14 @@ Başlangıç noktası, kalite ayarları ya da model değişirse acilis.json yeni
 - Yükseklik tuşları (27 Ekim akşamı, kullanıcı istedi): Shift yüksel (kalkış), Ctrl alçal (iniş); Boşluk da yükseltir (eski alışkanlık).
   Önceden Boşluk yüksel, Shift alçaldı. Ctrl basılıyken tarayıcı kısayolları `preventDefault` ile kesiliyor (Ctrl+R/F/S/P/E ...).
   Ctrl+W/T/N'yi Chrome sayfaya bırakmıyor: alçalırken W ile ileri gitmek sekmeyi kapatabilir. Önlem: uçarken Ctrl basılıyken
-  `beforeunload` "Siteden ayrılsın mı?" sorusu çıkarır. Tam çözüm istenirse: tam ekran + `navigator.keyboard.lock()` (yalnız Chrome/Edge).
+  `beforeunload` "Siteden ayrılsın mı?" sorusu çıkarır. 2 Kasım: kullanıcı bu sorunun alçalıp ileri giderken çıktığını söyledi;
+  `tamEkran` nesnesi eklendi: `basla()` (ve "Sinematik tur" düğmesi) `requestFullscreen` + `navigator.keyboard.lock()` (bütün tuşlar)
+  çağırır, kilitliyken Ctrl+W oyuna gelir ve `preventDefault` ile durur; tam ekrandan çıkmak için Esc basılı tutulur. Ayarlarda "Tam ekran"
+  kutusu (`#tamEkranAcik`, localStorage `mustafapasa-drone-tamekran`, varsayılan açık; kapatınca tam ekrandan çıkar). Kilit yoksa
+  (Firefox, Safari, kutu kapalı, Esc ile başlatılmış) soru yedekte. Claude'un gömülü tarayıcı panelinde `requestFullscreen` hiç sonuçlanmadı
+  (ne açıldı ne hata verdi), oyun etkilenmedi. Kullanıcı 2 Kasım'da kendi tarayıcısında denedi: tam ekranda Ctrl ile alçalırken W ileri
+  gidiyor, soru çıkmıyor.
+  `dilUygula()` artık `data-t-title` ile açıklama baloncuklarını da çeviriyor.
 - Fotoğraf görevleri / Sinasos albümü (27 Ekim, kullanıcı istedi): `gorev` nesnesi, veri `noktalar.json` "gorevler" (alan açıklaması dosyadaki
   "gorevAciklama"da). 8 görev: kilisenin revaklı batı girişi (narteks), medresenin taç kapısı, minare + cami, Cansever Konağı avlusu tepeden,
   Eski Rum Evi'nin cumbalı KB cephesi, kanyondan Aziz Vasilios (GB), Nikolaos avlusu yukarıdan, köy panoraması (yerden >= 100 m, en az 5 gezi
